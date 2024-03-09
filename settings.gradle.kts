@@ -15,21 +15,21 @@ if (!file(".git").exists()) {
     val errorText = """
         
         =====================[ ERROR ]=====================
-         The Tentacles project directory is not a properly cloned Git repository.
+         The IceCream project directory is not a properly cloned Git repository.
          
-         In order to build Tentacles from source you must clone
+         In order to build IceCream from source you must clone
          the repository using Git, not download a code zip from GitHub.
          
-         See https://github.com/PurpurMC/Purpur/blob/HEAD/CONTRIBUTING.md
-         for further information on building and modifying Purpur.
+         See https://icecreammc.gitbook.io/docs/developers/contributing
+         for further information on building and modifying IceCream.
         ===================================================
     """.trimIndent()
     error(errorText)
 }
 
-rootProject.name = "tentacles"
+rootProject.name = "icecream"
 
-for (name in listOf("Tentacles-API", "Tentacles-Server", "paper-api-generator")) {
+for (name in listOf("IceCream-API", "IceCream-Server", "paper-api-generator")) {
     val projName = name.lowercase(Locale.ENGLISH)
     include(projName)
     findProject(":$projName")!!.projectDir = file(name)

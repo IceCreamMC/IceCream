@@ -63,7 +63,7 @@ dependencies {
 }
 
 paperweight {
-    serverProject = project(":tentacles-server")
+    serverProject = project(":icecream-server")
 
     remapRepo = paperMavenPublicUrl
     decompileRepo = paperMavenPublicUrl
@@ -76,10 +76,10 @@ paperweight {
             baseName("Purpur")
 
             apiPatchDir = layout.projectDirectory.dir("patches/api")
-            apiOutputDir = layout.projectDirectory.dir("Tentacles-API")
+            apiOutputDir = layout.projectDirectory.dir("IceCream-API")
 
             serverPatchDir = layout.projectDirectory.dir("patches/server")
-            serverOutputDir = layout.projectDirectory.dir("Tentacles-Server")
+            serverOutputDir = layout.projectDirectory.dir("IceCream-Server")
         }
 
         patchTasks.register("generatedApi") {
@@ -92,7 +92,7 @@ paperweight {
 }
 
 tasks.generateDevelopmentBundle {
-    apiCoordinates = "org.purpurmc.tentacles:tentacles-api"
+    apiCoordinates = "org.icecreammc.icecream:icecream-api"
     mojangApiCoordinates = "io.papermc.paper:paper-mojangapi"
     libraryRepositories.set(
         listOf(
@@ -107,7 +107,7 @@ allprojects {
     publishing {
         repositories {
             maven("https://repo.purpurmc.org/snapshots") {
-                name = "tentacles"
+                name = "icecream"
                 credentials(PasswordCredentials::class)
             }
         }
@@ -122,13 +122,24 @@ publishing {
     }
 }
 
+tasks.register<Copy>("createServerJar") {
+    group = "icecream"
+    dependsOn(tasks.createReobfPaperclipJar)
+    from("build/libs/icecream-paperclip-${project.version}-reobf.jar")
+    into("build/libs")
+
+    rename {
+        it.replace("paperclip-${project.version}-reobf", project.properties["mcVersion"].toString())
+    }
+}
+
 tasks.register("printMinecraftVersion") {
     doLast {
         println(providers.gradleProperty("mcVersion").get().trim())
     }
 }
 
-tasks.register("printTentaclesVersion") {
+tasks.register("printIceCreamVersion") {
     doLast {
         println(project.version)
     }

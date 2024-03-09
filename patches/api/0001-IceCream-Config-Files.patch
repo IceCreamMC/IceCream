@@ -1,23 +1,23 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: BillyGalbreath <blake.galbreath@gmail.com>
-Date: Sun, 12 Jun 2022 10:57:51 -0500
-Subject: [PATCH] Tentacles config files
+From: Pancakse <pancakseyt@gmail.com>
+Date: Wed, 13 Dec 2023 12:57:24 -0700
+Subject: [PATCH] IceCream Config Files
 
 
 diff --git a/src/main/java/org/bukkit/Server.java b/src/main/java/org/bukkit/Server.java
-index 90f109af3c83a1bc12cb27497d107de5029d0ce6..ff051e55462bd2efd2855c893197f1a084d75d04 100644
+index 90f109af3c83a1bc12cb27497d107de5029d0ce6..7dfede72c732a978e819756381ed95177ef059ac 100644
 --- a/src/main/java/org/bukkit/Server.java
 +++ b/src/main/java/org/bukkit/Server.java
 @@ -2241,6 +2241,13 @@ public interface Server extends PluginMessageRecipient, net.kyori.adventure.audi
          }
          // Purpur end
  
-+        // Tentacles start
++        // IceCream start
 +        @NotNull
-+        public org.bukkit.configuration.file.YamlConfiguration getTentaclesConfig() {
++        public org.bukkit.configuration.file.YamlConfiguration getIceCreamConfig() {
 +            throw new UnsupportedOperationException("Not supported yet.");
 +        }
-+        // Tentacles end
++        // IceCream end
 +
          /**
           * Sends the component to the player
