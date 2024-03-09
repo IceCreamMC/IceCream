@@ -1,6 +1,6 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: Pancakse <pancakseyt@gmail.com>
-Date: Wed, 13 Dec 2023 12:59:29 -0700
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Sat, 9 Mar 2024 23:12:17 +0000
 Subject: [PATCH] Rebrand
 
 
@@ -31,6 +31,19 @@ index 32366253c04c493135f2b22d1940f83669104723..6a1cba2437e6f3938666178b6af43840
              "Implementation-Vendor" to date, // Paper
              "Specification-Title" to "Bukkit",
              "Specification-Version" to project.version,
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index dabaf0cff6dafe8ca411996e67ead9a2cf84dfb8..864b1b31ad6b766215347d8cd2d7fc5376ebf431 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
+ import javax.annotation.Nonnull; // Paper
+ 
+ public final class CraftServer implements Server {
+-    private final String serverName = "Purpur"; // Paper // Pufferfish // Purpur
++    private final String serverName = "IceCream"; // Paper // Pufferfish // Purpur // IceCream
+     private final String serverVersion;
+     private final String bukkitVersion = Versioning.getBukkitVersion();
+     private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 index d5f642e4b1c1ede7e9d2dea072aa5f22c73b5c23..8c949b7457418b412f6b0177efa212a1a2db32ab 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
@@ -46,6 +59,33 @@ index d5f642e4b1c1ede7e9d2dea072aa5f22c73b5c23..8c949b7457418b412f6b0177efa212a1
      }
  
      @Override
+diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..11c77d7b380b5012152f13e440080f8f4ea97c13 100644
+--- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
++++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
+@@ -9,21 +9,6 @@ import org.bukkit.Bukkit;
+ 
+ public final class Versioning {
+     public static String getBukkitVersion() {
+-        String result = "Unknown-Version";
+-
+-        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/org.purpurmc.purpur/purpur-api/pom.properties"); // Pufferfish // Purpur
+-        Properties properties = new Properties();
+-
+-        if (stream != null) {
+-            try {
+-                properties.load(stream);
+-
+-                result = properties.getProperty("version");
+-            } catch (IOException ex) {
+-                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get Bukkit version!", ex);
+-            }
+-        }
+-
+-        return result;
++        return "1.20.4-R0.1-SNAPSHOT"; // IceCream
+     }
+ }
 diff --git a/src/main/java/org/icecreammc/icecream/util/IceCreamVersionFetcher.java b/src/main/java/org/icecreammc/icecream/util/IceCreamVersionFetcher.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..3640f8b548714ff489cbab124debb0da4493bfd0
@@ -197,46 +237,6 @@ index 0000000000000000000000000000000000000000..3640f8b548714ff489cbab124debb0da
 +        return Component.text("Previous version: " + oldVersion, NamedTextColor.GRAY, TextDecoration.ITALIC);
 +    }
 +}
-diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-index dabaf0cff6dafe8ca411996e67ead9a2cf84dfb8..864b1b31ad6b766215347d8cd2d7fc5376ebf431 100644
---- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-+++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
-@@ -266,7 +266,7 @@ import javax.annotation.Nullable; // Paper
- import javax.annotation.Nonnull; // Paper
- 
- public final class CraftServer implements Server {
--    private final String serverName = "Purpur"; // Paper // Pufferfish // Purpur
-+    private final String serverName = "IceCream"; // Paper // Pufferfish // Purpur // IceCream
-     private final String serverVersion;
-     private final String bukkitVersion = Versioning.getBukkitVersion();
-     private final Logger logger = Logger.getLogger("Minecraft");
-diff --git a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-index 774556a62eb240da42e84db4502e2ed43495be17..9dd5ca714ccc48a247b3c17dddf66ea0b950c688 100644
---- a/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-+++ b/src/main/java/org/bukkit/craftbukkit/util/Versioning.java
-@@ -9,21 +9,6 @@ import org.bukkit.Bukkit;
- 
- public final class Versioning {
-     public static String getBukkitVersion() {
--        String result = "Unknown-Version";
--
--        InputStream stream = Bukkit.class.getClassLoader().getResourceAsStream("META-INF/maven/io.papermc.paper/paper-api/pom.properties");
--        Properties properties = new Properties();
--
--        if (stream != null) {
--            try {
--                properties.load(stream);
--
--                result = properties.getProperty("version");
--            } catch (IOException ex) {
--                Logger.getLogger(Versioning.class.getName()).log(Level.SEVERE, "Could not get Bukkit version!", ex);
--            }
--        }
--
--        return result;
-+        return "1.20.4-R0.1-SNAPSHOT"; // IceCream
-     }
- }
 diff --git a/src/main/java/org/purpurmc/purpur/PurpurConfig.java b/src/main/java/org/purpurmc/purpur/PurpurConfig.java
 index efe25d3894f3ad000257c72d9a5e06ef22446d41..b8912a02adcf960e9ba0c7bb4f7c408a2c530958 100644
 --- a/src/main/java/org/purpurmc/purpur/PurpurConfig.java
