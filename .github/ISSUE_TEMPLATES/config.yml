@@ -1,0 +1,13 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Feature Request
+    url: https://discord.gg/zhvU2PRfFg
+    about: Suggest an idea for IceCream
+  - name: Exploit Report
+    url: https://discord.gg/zhvU2PRfFg
+    about: |
+      Since GitHub does not allow private issues, exploit reports are currently handled through our Discord.
+      To report an exploit, contact a IceCream Team member on the IceCream Discord.
+  - name: IceCream Discord
+    url: https://discord.gg/zhvU2PRfFg
+    about: If you are having issues with Spark profiling or have other minor issues, come join our Discord server for help!
