@@ -1,0 +1,41 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Sun, 10 Mar 2024 23:08:41 +0000
+Subject: [PATCH] Do not process chat/commands before player has joined
+
+
+diff --git a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+index ae5a2152cde8922deeb8d1d8a85bf39518ccd759..b9ae825949dd74a5748ec128976039ecc8daf300 100644
+--- a/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
++++ b/src/main/java/net/minecraft/server/network/ServerGamePacketListenerImpl.java
+@@ -6,6 +6,7 @@ import com.mojang.authlib.GameProfile;
+ import com.mojang.brigadier.ParseResults;
+ import com.mojang.brigadier.StringReader;
+ import com.mojang.logging.LogUtils;
++import org.icecreammc.icecream.configuration.IceCreamConfig;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMap.Entry;
+ import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
+ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+@@ -2338,6 +2339,8 @@ public class ServerGamePacketListenerImpl extends ServerCommonPacketListenerImpl
+         if (this.player.isRemoved() || this.player.getChatVisibility() == ChatVisiblity.HIDDEN) { // CraftBukkit - dead men tell no tales
+             this.send(new ClientboundSystemChatPacket(Component.translatable("chat.disabled.options").withStyle(ChatFormatting.RED), false));
+             return Optional.empty();
++        } else if (player.joining && IceCreamConfig.doNotProcessChatCommands) { // IceCream - EMC - do not handle chat messages before they joined
++            return Optional.empty();
+         } else {
+             this.player.resetLastActionTime();
+             return optional;
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+index ad43f25abff24f789afef90dbc98e9b53a0ae561..55d31bfb9703c30d6aaaaef1fe71f20497e44a64 100644
+--- a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+@@ -152,4 +152,9 @@ public class IceCreamConfig {
+         }
+         return builder.build();
+     }
++
++    public static boolean doNotProcessChatCommands = true;
++    private static void  doNotProcessChatCommands() {
++        doNotProcessChatCommands = getBoolean("settings.do-not-process-chat-commands", doNotProcessChatCommands);
++    }
+ }

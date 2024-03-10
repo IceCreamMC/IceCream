@@ -1,0 +1,37 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Sun, 10 Mar 2024 22:53:41 +0000
+Subject: [PATCH] Dont Save Fireworks
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
+index 5b3b59057b962438c6f4fc8a1507342865b3bc11..9aba04249449acce54cfea51570c457b808cceb1 100644
+--- a/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
++++ b/src/main/java/net/minecraft/world/entity/projectile/FireworkRocketEntity.java
+@@ -355,4 +355,11 @@ public class FireworkRocketEntity extends Projectile implements ItemSupplier {
+     public boolean isAttackable() {
+         return false;
+     }
++
++    // IceCream start - Don't save Fireworks
++    @Override
++    public boolean shouldBeSaved() {
++        return this.level().icecreamConfig.saveFireworks;
++    }
++    // IceCream end
+ }
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+index 45e478e0c28d095ff5e889bb35f1617395e71bb5..8b26cf49c11e69c0f7df5b9acf9e9e8273b26c08 100644
+--- a/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+@@ -78,3 +78,9 @@ public class IceCreamWorldConfig {
+         return value.isEmpty() ? fallback : value;
+     }
+ }
++
++    public boolean saveFireworks = false;
++    private void saveFireworks() {
++        saveFireworks = getBoolean("gameplay-mechanics.should-save-fireworks", saveFireworks);
++    }
++    
+\ No newline at end of file
