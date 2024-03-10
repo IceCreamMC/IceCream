@@ -45,17 +45,15 @@ index dabaf0cff6dafe8ca411996e67ead9a2cf84dfb8..864b1b31ad6b766215347d8cd2d7fc53
      private final String bukkitVersion = Versioning.getBukkitVersion();
      private final Logger logger = Logger.getLogger("Minecraft");
 diff --git a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-index d5f642e4b1c1ede7e9d2dea072aa5f22c73b5c23..8c949b7457418b412f6b0177efa212a1a2db32ab 100644
+index d5f642e4b1c1ede7e9d2dea072aa5f22c73b5c23..112dd88b9106b73dce8f55e588b843b32c591316 100644
 --- a/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
 +++ b/src/main/java/org/bukkit/craftbukkit/util/CraftMagicNumbers.java
-@@ -496,8 +496,8 @@ public final class CraftMagicNumbers implements UnsafeValues {
-     }
+@@ -497,7 +497,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
  
      @Override
--    public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
+     public com.destroystokyo.paper.util.VersionFetcher getVersionFetcher() {
 -        return new com.destroystokyo.paper.PaperVersionFetcher(); // Purpur
-+    public org.icecreammc.icecream.util.IceCreamVersionFetcher getVersionFetcher() {
-+        return new org.icecreammc.icecream.util.IceCreamVersionFetcher(); // Purpur
++        return new org.icecreammc.icecream.IceCreamVersionFetcher(); // Purpur // IceCream
      }
  
      @Override
@@ -86,11 +84,11 @@ index 99597258e8e88cd9e2c901c4ac3ff7faeeabee2b..11c77d7b380b5012152f13e440080f8f
 +        return "1.20.4-R0.1-SNAPSHOT"; // IceCream
      }
  }
-diff --git a/src/main/java/org/icecreammc/icecream/util/IceCreamVersionFetcher.java b/src/main/java/org/icecreammc/icecream/util/IceCreamVersionFetcher.java
+diff --git a/src/main/java/org/icecreammc/icecream/IceCreamVersionFetcher.java b/src/main/java/org/icecreammc/icecream/IceCreamVersionFetcher.java
 new file mode 100644
 index 0000000000000000000000000000000000000000..3640f8b548714ff489cbab124debb0da4493bfd0
 --- /dev/null
-+++ b/src/main/java/org/icecreammc/icecream/util/IceCreamVersionFetcher.java
++++ b/src/main/java/org/icecreammc/icecream/IceCreamVersionFetcher.java
 @@ -0,0 +1,145 @@
 +package org.icecreammc.icecream;
 +
