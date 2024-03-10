@@ -52,8 +52,8 @@ jobs:
           title: "Release #${{ env.workflow }}"
           automatic_release_tag: release-${{ env.workflow }}
           repo_token: "${{ secrets.TOKEN }}"
-          files: build/libs/*.jar
-          prerelease: true
+          files: build/libs/icecream-1.20.4.jar
+          prerelease: false
 
       - name: Release Artifacts (Latest)
         if: github.ref_name == env.branch
@@ -63,4 +63,4 @@ jobs:
           automatic_release_tag: latest-${{ env.version }}
           repo_token: "${{ secrets.TOKEN }}"
           files: build/libs/*.jar
-          prerelease: true
+          prerelease: false
