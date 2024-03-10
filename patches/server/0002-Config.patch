@@ -1,0 +1,531 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Sat, 9 Mar 2024 23:12:17 +0000
+Subject: [PATCH] Config
+
+
+diff --git a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+index 5ca6af93362d205438f8321ee2461ae7f8160df1..325fdbca254f108e1a2b2c23549c85772c175936 100644
+--- a/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/src/main/java/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -1,20 +1,15 @@
+ package net.minecraft.server.dedicated;
+ 
+-import com.google.common.collect.Lists;
+ import com.mojang.authlib.GameProfile;
+ import com.mojang.datafixers.DataFixer;
+ import com.mojang.logging.LogUtils;
+-import java.io.BufferedReader;
++
+ import java.io.BufferedWriter;
+ import java.io.IOException;
+-import java.io.InputStreamReader;
+ import java.net.InetAddress;
+ import java.net.Proxy;
+-import java.nio.charset.StandardCharsets;
+ import java.nio.file.Files;
+ import java.nio.file.Path;
+-import java.util.Collections;
+-import java.util.List;
+ import java.util.Locale;
+ import java.util.Optional;
+ import java.util.function.BooleanSupplier;
+@@ -58,10 +53,10 @@ import org.apache.logging.log4j.Level;
+ import org.apache.logging.log4j.LogManager;
+ import org.apache.logging.log4j.io.IoBuilder;
+ import org.bukkit.command.CommandSender;
+-import co.aikar.timings.MinecraftTimings; // Paper
+ import org.bukkit.event.server.ServerCommandEvent;
+ import org.bukkit.craftbukkit.util.Waitable; // Paper
+ import org.bukkit.event.server.RemoteServerCommandEvent;
++import org.icecreammc.icecream.configuration.IceCreamConfig;
+ // CraftBukkit end
+ 
+ public class DedicatedServer extends MinecraftServer implements ServerInterface {
+@@ -235,6 +230,16 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+         gg.pufferfish.pufferfish.PufferfishConfig.load(); // Pufferfish
+         gg.pufferfish.pufferfish.PufferfishCommand.init(); // Pufferfish
+ 
++        // IceCream start
++        try {
++            IceCreamConfig.init((java.io.File) options.valueOf("icecream-settings"));
++        } catch (Exception e) {
++            DedicatedServer.LOGGER.error("Unable to load server configuration", e);
++            return false;
++        }
++        IceCreamConfig.registerCommands();
++        // IceCream end
++
+         this.setPvpAllowed(dedicatedserverproperties.pvp);
+         this.setFlightAllowed(dedicatedserverproperties.allowFlight);
+         this.setMotd(dedicatedserverproperties.motd);
+diff --git a/src/main/java/net/minecraft/world/level/Level.java b/src/main/java/net/minecraft/world/level/Level.java
+index eebe6378de52e780aabfad3c414564349196ec6e..f52c47acb3f6aeafa36cd031fb4a8ca3f20cc3ca 100644
+--- a/src/main/java/net/minecraft/world/level/Level.java
++++ b/src/main/java/net/minecraft/world/level/Level.java
+@@ -10,9 +10,10 @@ import java.util.function.Consumer;
+ import java.util.function.Predicate;
+ import java.util.function.Supplier;
+ import javax.annotation.Nullable;
++
++import org.icecreammc.icecream.configuration.IceCreamWorldConfig;
+ import net.minecraft.CrashReport;
+ import net.minecraft.CrashReportCategory;
+-import net.minecraft.ReportedException;
+ import net.minecraft.core.BlockPos;
+ import net.minecraft.core.Direction;
+ import net.minecraft.core.Holder;
+@@ -26,14 +27,12 @@ import net.minecraft.nbt.CompoundTag;
+ import net.minecraft.network.protocol.Packet;
+ import net.minecraft.resources.ResourceKey;
+ import net.minecraft.resources.ResourceLocation;
+-import io.papermc.paper.util.MCUtil;
+ import net.minecraft.server.MinecraftServer;
+ import net.minecraft.server.level.FullChunkStatus;
+ import net.minecraft.server.level.ServerLevel;
+ import net.minecraft.sounds.SoundEvent;
+ import net.minecraft.sounds.SoundEvents;
+ import net.minecraft.sounds.SoundSource;
+-import net.minecraft.util.AbortableIterationConsumer;
+ import net.minecraft.util.Mth;
+ import net.minecraft.util.RandomSource;
+ import net.minecraft.util.profiling.ProfilerFiller;
+@@ -42,8 +41,6 @@ import net.minecraft.world.TickRateManager;
+ import net.minecraft.world.damagesource.DamageSource;
+ import net.minecraft.world.damagesource.DamageSources;
+ import net.minecraft.world.entity.Entity;
+-import net.minecraft.world.entity.boss.EnderDragonPart;
+-import net.minecraft.world.entity.boss.enderdragon.EnderDragon;
+ import net.minecraft.world.entity.item.ItemEntity;
+ import net.minecraft.world.entity.player.Player;
+ import net.minecraft.world.item.ItemStack;
+@@ -89,17 +86,14 @@ import net.minecraft.network.protocol.game.ClientboundSetBorderSizePacket;
+ import net.minecraft.network.protocol.game.ClientboundSetBorderWarningDelayPacket;
+ import net.minecraft.network.protocol.game.ClientboundSetBorderWarningDistancePacket;
+ import org.bukkit.Bukkit;
+-import org.bukkit.Location;
+ import org.bukkit.craftbukkit.CraftServer;
+ import org.bukkit.craftbukkit.CraftWorld;
+ import org.bukkit.craftbukkit.block.CapturedBlockState;
+ import org.bukkit.craftbukkit.block.CraftBlockState;
+ import org.bukkit.craftbukkit.block.data.CraftBlockData;
+ import org.bukkit.craftbukkit.util.CraftSpawnCategory;
+-import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+ import org.bukkit.entity.SpawnCategory;
+ import org.bukkit.event.block.BlockPhysicsEvent;
+-import org.bukkit.event.world.GenericGameEvent;
+ // CraftBukkit end
+ 
+ public abstract class Level implements LevelAccessor, AutoCloseable {
+@@ -174,6 +168,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+ 
+     public final com.destroystokyo.paper.antixray.ChunkPacketBlockController chunkPacketBlockController; // Paper - Anti-Xray
+     public final org.purpurmc.purpur.PurpurWorldConfig purpurConfig; // Purpur
++    public final IceCreamWorldConfig icecreamConfig; // IceCream
+     public final co.aikar.timings.WorldTimingsHandler timings; // Paper
+     public static BlockPos lastPhysicsProblem; // Spigot
+     private org.spigotmc.TickLimiter entityLimiter;
+@@ -266,6 +261,7 @@ public abstract class Level implements LevelAccessor, AutoCloseable {
+         this.spigotConfig = new org.spigotmc.SpigotWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName()); // Spigot
+         this.paperConfig = paperWorldConfigCreator.apply(this.spigotConfig); // Paper - create paper world config
+         this.purpurConfig = new org.purpurmc.purpur.PurpurWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // Purpur
++        this.icecreamConfig = new IceCreamWorldConfig(((net.minecraft.world.level.storage.PrimaryLevelData) worlddatamutable).getLevelName(), env); // IceCream
+         this.playerBreedingCooldowns = this.getNewBreedingCooldownCache(); // Purpur
+         this.generator = gen;
+         this.world = new CraftWorld((ServerLevel) this, gen, biomeProvider, env);
+diff --git a/src/main/java/org/bukkit/craftbukkit/CraftServer.java b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+index 864b1b31ad6b766215347d8cd2d7fc5376ebf431..d699e557fb2815abae6d25cde05a395b0101532e 100644
+--- a/src/main/java/org/bukkit/craftbukkit/CraftServer.java
++++ b/src/main/java/org/bukkit/craftbukkit/CraftServer.java
+@@ -14,6 +14,7 @@ import com.mojang.brigadier.tree.CommandNode;
+ import com.mojang.brigadier.tree.LiteralCommandNode;
+ import com.mojang.serialization.Dynamic;
+ import com.mojang.serialization.Lifecycle;
++import org.icecreammc.icecream.configuration.IceCreamConfig;
+ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+ import java.awt.image.BufferedImage;
+ import java.io.ByteArrayOutputStream;
+@@ -245,7 +246,6 @@ import org.bukkit.plugin.PluginManager;
+ import org.bukkit.plugin.ServicesManager;
+ import org.bukkit.plugin.SimplePluginManager;
+ import org.bukkit.plugin.SimpleServicesManager;
+-import org.bukkit.plugin.java.JavaPluginLoader;
+ import org.bukkit.plugin.messaging.Messenger;
+ import org.bukkit.plugin.messaging.StandardMessenger;
+ import org.bukkit.potion.Potion;
+@@ -1069,6 +1069,7 @@ public final class CraftServer implements Server {
+         org.spigotmc.SpigotConfig.init((File) this.console.options.valueOf("spigot-settings")); // Spigot
+         this.console.paperConfigurations.reloadConfigs(this.console);
+         org.purpurmc.purpur.PurpurConfig.init((File) console.options.valueOf("purpur-settings")); // Purpur
++        IceCreamConfig.init((File) console.options.valueOf("icecream-settings")); // IceCream
+         for (ServerLevel world : this.console.getAllLevels()) {
+             // world.serverLevelData.setDifficulty(config.difficulty); // Paper - per level difficulty
+             world.setSpawnSettings(world.serverLevelData.getDifficulty() != Difficulty.PEACEFUL && config.spawnMonsters, config.spawnAnimals); // Paper - per level difficulty (from MinecraftServer#setDifficulty(ServerLevel, Difficulty, boolean))
+@@ -1085,6 +1086,7 @@ public final class CraftServer implements Server {
+             }
+             world.spigotConfig.init(); // Spigot
+             world.purpurConfig.init(); // Purpur
++            world.icecreamConfig.init(); // IceCream
+         }
+ 
+         Plugin[] pluginClone = pluginManager.getPlugins().clone(); // Paper
+@@ -1101,6 +1103,7 @@ public final class CraftServer implements Server {
+         org.spigotmc.SpigotConfig.registerCommands(); // Spigot
+         io.papermc.paper.command.PaperCommands.registerCommands(this.console); // Paper
+         org.purpurmc.purpur.PurpurConfig.registerCommands(); // Purpur
++        IceCreamConfig.registerCommands(); // IceCream
+         this.overrideAllCommandBlockCommands = this.commandsConfiguration.getStringList("command-block-overrides").contains("*");
+         this.ignoreVanillaPermissions = this.commandsConfiguration.getBoolean("ignore-vanilla-permissions");
+ 
+@@ -3111,6 +3114,13 @@ public final class CraftServer implements Server {
+         }
+         // Purpur end
+ 
++        // IceCream start
++        @Override
++        public YamlConfiguration getIceCreamConfig() {
++            return IceCreamConfig.config;
++        }
++        // IceCream end
++
+         @Override
+         public void restart() {
+             org.spigotmc.RestartCommand.restart();
+diff --git a/src/main/java/org/bukkit/craftbukkit/Main.java b/src/main/java/org/bukkit/craftbukkit/Main.java
+index 409c0e81571e23c9d535b541c61538424259d60a..343db9e8db05f50d1e2c0b324b9504a0b2d726b4 100644
+--- a/src/main/java/org/bukkit/craftbukkit/Main.java
++++ b/src/main/java/org/bukkit/craftbukkit/Main.java
+@@ -188,6 +188,14 @@ public class Main {
+                         .describedAs("Yml file");
+                 // Purpur end
+ 
++                // IceCream start
++                acceptsAll(asList("icecream", "icecream-settings"), "File for icecream settings")
++                        .withRequiredArg()
++                        .ofType(File.class)
++                        .defaultsTo(new File("icecream.yml"))
++                        .describedAs("Yml file");
++                // IceCream end
++
+                 // Paper start
+                 acceptsAll(asList("server-name"), "Name of the server")
+                         .withRequiredArg()
+diff --git a/src/main/java/org/icecreammc/icecream/IceCreamCommand.java b/src/main/java/org/icecreammc/icecream/IceCreamCommand.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..0ccc0749ca01d7a15237549555ccec012a375266
+--- /dev/null
++++ b/src/main/java/org/icecreammc/icecream/IceCreamCommand.java
+@@ -0,0 +1,66 @@
++package org.icecreammc.icecream;
++
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.server.level.ServerLevel;
++import org.icecreammc.icecream.configuration.IceCreamConfig;
++import org.bukkit.ChatColor;
++import org.bukkit.Location;
++import org.bukkit.command.Command;
++import org.bukkit.command.CommandSender;
++
++import java.io.File;
++import java.util.Collections;
++import java.util.List;
++import java.util.stream.Collectors;
++import java.util.stream.Stream;
++
++public class IceCreamCommand extends Command {
++    public IceCreamCommand(String name) {
++        super(name);
++        this.description = "IceCream related commands";
++        this.usageMessage = "/icecream [reload | version]";
++        this.setPermission("bukkit.command.icecream");
++    }
++
++    @Override
++    public List<String> tabComplete(CommandSender sender, String alias, String[] args, Location location) throws IllegalArgumentException {
++        if (args.length == 1) {
++            return Stream.of("reload", "version")
++                    .filter(arg -> arg.startsWith(args[0].toLowerCase()))
++                    .collect(Collectors.toList());
++        }
++        return Collections.emptyList();
++    }
++
++    @Override
++    public boolean execute(CommandSender sender, String commandLabel, String[] args) {
++        if (!testPermission(sender)) return true;
++
++        if (args.length != 1) {
++            sender.sendMessage(ChatColor.RED + "Usage: " + usageMessage);
++            return false;
++        }
++
++        if (args[0].equalsIgnoreCase("reload")) {
++            Command.broadcastCommandMessage(sender, ChatColor.RED + "Please note that this command is not supported and may cause issues.");
++            Command.broadcastCommandMessage(sender, ChatColor.RED + "If you encounter any issues please use the /stop command to restart your server.");
++
++            MinecraftServer console = MinecraftServer.getServer();
++            IceCreamConfig.init((File) console.options.valueOf("icecream-settings"));
++            for (ServerLevel level : console.getAllLevels()) {
++                level.icecreamConfig.init();
++                level.resetBreedingCooldowns();
++            }
++            console.server.reloadCount++;
++
++            Command.broadcastCommandMessage(sender, ChatColor.GREEN + "IceCream config reload complete.");
++        } else if (args[0].equalsIgnoreCase("version")) {
++            Command verCmd = org.bukkit.Bukkit.getServer().getCommandMap().getCommand("version");
++            if (verCmd != null) {
++                return verCmd.execute(sender, commandLabel, new String[0]);
++            }
++        }
++
++        return true;
++    }
++}
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..ad43f25abff24f789afef90dbc98e9b53a0ae561
+--- /dev/null
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+@@ -0,0 +1,155 @@
++package org.icecreammc.icecream.configuration;
++
++import com.google.common.base.Throwables;
++import com.google.common.collect.ImmutableMap;
++import org.icecreammc.icecream.IceCreamCommand;
++import net.minecraft.server.MinecraftServer;
++import net.minecraft.world.level.block.Blocks;
++import org.bukkit.Bukkit;
++import org.bukkit.command.Command;
++import org.bukkit.configuration.ConfigurationSection;
++import org.bukkit.configuration.InvalidConfigurationException;
++import org.bukkit.configuration.file.YamlConfiguration;
++
++import java.io.File;
++import java.io.IOException;
++import java.lang.reflect.InvocationTargetException;
++import java.lang.reflect.Method;
++import java.lang.reflect.Modifier;
++import java.util.HashMap;
++import java.util.List;
++import java.util.Map;
++import java.util.logging.Level;
++
++@SuppressWarnings("unused")
++public class IceCreamConfig {
++    private static final String HEADER = "This is the main configuration file for IceCream.\n"
++            + "If you need help with the configuration or have any questions related to IceCream,\n"
++            + "join us in our Discord server.\n"
++            + "\n"
++            + "Discord: https://discord.gg/zhvU2PRfFg \n"
++            + "Docs: COMING SOON \n"
++            + "New builds: https://github.com/IceCreamMC/IceCream/releases/latest";
++    private static File CONFIG_FILE;
++    public static YamlConfiguration config;
++
++    private static Map<String, Command> commands;
++
++    public static int version;
++    static boolean verbose;
++
++    public static void init(File configFile) {
++        CONFIG_FILE = configFile;
++        config = new YamlConfiguration();
++        try {
++            config.load(CONFIG_FILE);
++        } catch (IOException ignore) {
++        } catch (InvalidConfigurationException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not load icecream.yml, please correct your syntax errors", ex);
++            throw Throwables.propagate(ex);
++        }
++        config.options().header(HEADER);
++        config.options().copyDefaults(true);
++        verbose = getBoolean("verbose", false);
++
++        commands = new HashMap<>();
++        commands.put("icecream", new IceCreamCommand("icecream"));
++
++        version = getInt("config-version", 3);
++        set("config-version", 3);
++
++        readConfig(IceCreamConfig.class, null);
++
++        Blocks.rebuildCache();
++    }
++
++    protected static void log(String s) {
++        if (verbose) {
++            log(Level.INFO, s);
++        }
++    }
++
++    protected static void log(Level level, String s) {
++        Bukkit.getLogger().log(level, s);
++    }
++
++    public static void registerCommands() {
++        for (Map.Entry<String, Command> entry : commands.entrySet()) {
++            MinecraftServer.getServer().server.getCommandMap().register(entry.getKey(), "IceCream", entry.getValue());
++        }
++    }
++
++    static void readConfig(Class<?> clazz, Object instance) {
++        for (Method method : clazz.getDeclaredMethods()) {
++            if (Modifier.isPrivate(method.getModifiers())) {
++                if (method.getParameterTypes().length == 0 && method.getReturnType() == Void.TYPE) {
++                    try {
++                        method.setAccessible(true);
++                        method.invoke(instance);
++                    } catch (InvocationTargetException ex) {
++                        throw Throwables.propagate(ex.getCause());
++                    } catch (Exception ex) {
++                        Bukkit.getLogger().log(Level.SEVERE, "Error invoking " + method, ex);
++                    }
++                }
++            }
++        }
++
++        try {
++            config.save(CONFIG_FILE);
++        } catch (IOException ex) {
++            Bukkit.getLogger().log(Level.SEVERE, "Could not save " + CONFIG_FILE, ex);
++        }
++    }
++
++    private static void set(String path, Object val) {
++        config.addDefault(path, val);
++        config.set(path, val);
++    }
++
++    private static String getString(String path, String def) {
++        config.addDefault(path, def);
++        return config.getString(path, config.getString(path));
++    }
++
++    private static boolean getBoolean(String path, boolean def) {
++        config.addDefault(path, def);
++        return config.getBoolean(path, config.getBoolean(path));
++    }
++
++    private static double getDouble(String path, double def) {
++        config.addDefault(path, def);
++        return config.getDouble(path, config.getDouble(path));
++    }
++
++    private static int getInt(String path, int def) {
++        config.addDefault(path, def);
++        return config.getInt(path, config.getInt(path));
++    }
++
++    private static <T> List getList(String path, T def) {
++        config.addDefault(path, def);
++        return config.getList(path, config.getList(path));
++    }
++
++    static Map<String, Object> getMap(String path, Map<String, Object> def) {
++        if (def != null && config.getConfigurationSection(path) == null) {
++            config.addDefault(path, def);
++            return def;
++        }
++        return toMap(config.getConfigurationSection(path));
++    }
++
++    private static Map<String, Object> toMap(ConfigurationSection section) {
++        ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
++        if (section != null) {
++            for (String key : section.getKeys(false)) {
++                Object obj = section.get(key);
++                if (obj != null) {
++                    builder.put(key, obj instanceof ConfigurationSection val ? toMap(val) : obj);
++                }
++            }
++        }
++        return builder.build();
++    }
++}
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..45e478e0c28d095ff5e889bb35f1617395e71bb5
+--- /dev/null
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+@@ -0,0 +1,80 @@
++package org.icecreammc.icecream.configuration;
++
++import org.apache.commons.lang.BooleanUtils;
++import org.bukkit.World;
++import org.bukkit.configuration.ConfigurationSection;
++
++import java.util.List;
++import java.util.Map;
++import java.util.function.Predicate;
++
++import static org.icecreammc.icecream.configuration.IceCreamConfig.log;
++
++@SuppressWarnings("unused")
++public class IceCreamWorldConfig {
++
++    private final String worldName;
++    private final World.Environment environment;
++
++    public IceCreamWorldConfig(String worldName, World.Environment environment) {
++        this.worldName = worldName;
++        this.environment = environment;
++        init();
++    }
++
++    public void init() {
++        log("-------- World Settings For [" + worldName + "] --------");
++        IceCreamConfig.readConfig(IceCreamWorldConfig.class, this);
++    }
++
++    private void set(String path, Object val) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, val);
++        IceCreamConfig.config.set("world-settings.default." + path, val);
++        if (IceCreamConfig.config.get("world-settings." + worldName + "." + path) != null) {
++            IceCreamConfig.config.addDefault("world-settings." + worldName + "." + path, val);
++            IceCreamConfig.config.set("world-settings." + worldName + "." + path, val);
++        }
++    }
++
++    private ConfigurationSection getConfigurationSection(String path) {
++        ConfigurationSection section = IceCreamConfig.config.getConfigurationSection("world-settings." + worldName + "." + path);
++        return section != null ? section : IceCreamConfig.config.getConfigurationSection("world-settings.default." + path);
++    }
++
++    private String getString(String path, String def) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, def);
++        return IceCreamConfig.config.getString("world-settings." + worldName + "." + path, IceCreamConfig.config.getString("world-settings.default." + path));
++    }
++
++    private boolean getBoolean(String path, boolean def) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, def);
++        return IceCreamConfig.config.getBoolean("world-settings." + worldName + "." + path, IceCreamConfig.config.getBoolean("world-settings.default." + path));
++    }
++
++    private boolean getBoolean(String path, Predicate<Boolean> predicate) {
++        String val = getString(path, "default").toLowerCase();
++        Boolean bool = BooleanUtils.toBooleanObject(val, "true", "false", "default");
++        return predicate.test(bool);
++    }
++
++    private double getDouble(String path, double def) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, def);
++        return IceCreamConfig.config.getDouble("world-settings." + worldName + "." + path, IceCreamConfig.config.getDouble("world-settings.default." + path));
++    }
++
++    private int getInt(String path, int def) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, def);
++        return IceCreamConfig.config.getInt("world-settings." + worldName + "." + path, IceCreamConfig.config.getInt("world-settings.default." + path));
++    }
++
++    private <T> List<?> getList(String path, T def) {
++        IceCreamConfig.config.addDefault("world-settings.default." + path, def);
++        return IceCreamConfig.config.getList("world-settings." + worldName + "." + path, IceCreamConfig.config.getList("world-settings.default." + path));
++    }
++
++    private Map<String, Object> getMap(String path, Map<String, Object> def) {
++        final Map<String, Object> fallback = IceCreamConfig.getMap("world-settings.default." + path, def);
++        final Map<String, Object> value = IceCreamConfig.getMap("world-settings." + worldName + "." + path, null);
++        return value.isEmpty() ? fallback : value;
++    }
++}
