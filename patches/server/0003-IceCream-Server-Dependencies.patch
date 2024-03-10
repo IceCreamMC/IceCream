@@ -1,0 +1,20 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Sun, 10 Mar 2024 22:15:51 +0000
+Subject: [PATCH] IceCream Server Dependencies
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index 6a1cba2437e6f3938666178b6af4384048916f5a..511f4217966bb6f1a1e24576d9f951d0507a3b86 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -52,6 +52,9 @@ dependencies {
+     runtimeOnly("org.apache.maven.resolver:maven-resolver-connector-basic:1.9.18")
+     runtimeOnly("org.apache.maven.resolver:maven-resolver-transport-http:1.9.18")
+ 
++    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.9.22") // IceCream - add kotlin stdlib
++    implementation("org.jetbrains.kotlin:kotlin-reflect:1.9.22") // IceCream - add kotlin refect
++
+     // Pufferfish start
+     implementation("org.yaml:snakeyaml:1.32")
+     implementation ("com.github.carleslc.Simple-YAML:Simple-Yaml:1.8.4") {
