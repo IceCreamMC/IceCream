@@ -2,7 +2,7 @@
 
 [![image](https://avatars.githubusercontent.com/u/153784457?s=200&v=4)
 
-### 🍦IceCreamMC🍦 is a server software for Minecraft based on [Canvas](https://github.com/CraftCanvasMC/Canvas) adding stuff to my liking.
+### 🍦IceCreamMC🍦 is a server software for Minecraft based on [Purpur](https://github.com/PurpurMC/Purpur) adding stuff to my liking.
 
 [![Discord](https://img.shields.io/discord/1184671557306548266?style=for-the-badge&logo=discord&logoColor=ffffff&label=DISCORD&color=5865F2&link=https%3A%2F%2Fdiscord.gg%2FMmfC52K8A8)](https://discord.gg/mJBQnWMWmv)
 [![Build Status](https://img.shields.io/github/actions/workflow/status/IceCreamMC/IceCream/build.yml?branch=ver/1.20.4&logo=GoogleAnalytics&style=for-the-badge&logoColor=ffffff)](https://github.com/IceCreamMC/IceCream/actions/workflows/build.yml?query=branch:ver/1.20.4)
