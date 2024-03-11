@@ -1,0 +1,185 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Mon, 11 Mar 2024 05:28:20 +0000
+Subject: [PATCH] Per Entity Type Collision Settings
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/LivingEntity.java b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+index bfa69b2c37f07132f8b31c12d26f4ceb074901a5..771d7602df9d102d503e9b7e5080f7c4330bbe27 100644
+--- a/src/main/java/net/minecraft/world/entity/LivingEntity.java
++++ b/src/main/java/net/minecraft/world/entity/LivingEntity.java
+@@ -3718,7 +3718,7 @@ public abstract class LivingEntity extends Entity implements Attackable {
+                 return;
+             }
+             // Paper end - don't run getEntities if we're not going to use its result
+-            List<Entity> list = this.level().getEntities((Entity) this, this.getBoundingBox(), EntitySelector.pushable(this, this.level().paperConfig().collisions.fixClimbingBypassingCrammingRule)); // Paper - Climbing should not bypass cramming gamerule
++            List<Entity> list = this.level().getEntities((Entity) this, this.getBoundingBox(), org.icecreammc.icecream.EntityFilter.pushable(this, this.level().paperConfig().collisions.fixClimbingBypassingCrammingRule)); // Paper - fix climbing bypassing cramming rule // IceCream - per entity type collision settings
+ 
+             if (!list.isEmpty()) {
+                 // Paper - don't run getEntities if we're not going to use its result; moved up
+diff --git a/src/main/java/org/icecreammc/icecream/EntityFilter.java b/src/main/java/org/icecreammc/icecream/EntityFilter.java
+new file mode 100644
+index 0000000000000000000000000000000000000000..e9fd0165eb3b3131578de9f517b3541749d1c6b3
+--- /dev/null
++++ b/src/main/java/org/icecreammc/icecream/EntityFilter.java
+@@ -0,0 +1,118 @@
++package org.icecreammc.icecream;
++
++import net.minecraft.world.entity.Entity;
++import net.minecraft.world.entity.EntitySelector;
++import net.minecraft.world.entity.EntityType;
++import net.minecraft.world.entity.MobCategory;
++import net.minecraft.world.scores.Team;
++
++import java.util.function.Predicate;
++
++public class EntityFilter {
++
++    public static Predicate<Entity> pushable(final Entity entity, final boolean ignoreClimbing) {
++        if (org.icecreammc.icecream.configuration.IceCreamConfig.allCollisionsEnabled) {
++            return EntitySelector.pushable(entity, ignoreClimbing);
++        }
++
++        final Team entityTeam = entity.getTeam();
++        final Team.CollisionRule entityCollision = entityTeam == null ?
++            Team.CollisionRule.ALWAYS : entityTeam.getCollisionRule();
++
++        if (entityCollision == Team.CollisionRule.NEVER || entity.level().isClientSide || entity.isSpectator()) {
++            return tested -> false;
++        }
++
++        final Predicate<Entity> ret = (tested) -> {
++            if (!tested.isCollidable(ignoreClimbing) || !tested.canCollideWith(entity) || !entity.canCollideWith(tested)) {
++                return false;
++            }
++
++            Team testedTeam = tested.getTeam();
++            Team.CollisionRule testedCollision = testedTeam == null ?
++                Team.CollisionRule.ALWAYS : testedTeam.getCollisionRule();
++
++            if (testedCollision == Team.CollisionRule.NEVER) {
++                return false;
++            }
++
++            if (testedTeam != null && entityTeam != null) {
++                boolean allied = entityTeam.isAlliedTo(testedTeam);
++
++                if ((entityCollision == Team.CollisionRule.PUSH_OWN_TEAM || testedCollision == Team.CollisionRule.PUSH_OWN_TEAM) && allied) {
++                    return false;
++                }
++
++                return (entityCollision != Team.CollisionRule.PUSH_OTHER_TEAMS && testedCollision != Team.CollisionRule.PUSH_OTHER_TEAMS) || allied;
++            } else {
++                return entityCollision == Team.CollisionRule.ALWAYS && testedCollision == Team.CollisionRule.ALWAYS;
++            }
++        };
++
++        return ret.and((tested) -> {
++            if (tested.getType() == EntityType.PLAYER && org.icecreammc.icecream.configuration.IceCreamConfig.playerCollisions) {
++                return true;
++            }
++            if (tested.getType().getCategory() == MobCategory.CREATURE && org.icecreammc.icecream.configuration.IceCreamConfig.animalCollisions) {
++                return true;
++            }
++            if (tested.getType().getCategory() == MobCategory.AMBIENT && org.icecreammc.icecream.configuration.IceCreamConfig.ambientCollisions) {
++                return true;
++            }
++            if (tested.getType().getCategory() == MobCategory.MONSTER) {
++                if (org.icecreammc.icecream.configuration.IceCreamConfig.monsterCollisions) {
++                    if (org.icecreammc.icecream.configuration.IceCreamConfig.pillagerCollisions) {
++                        return true;
++                    } else {
++                        return tested.getType() != EntityType.PILLAGER;
++                    }
++                } else {
++                    if (org.icecreammc.icecream.configuration.IceCreamConfig.pillagerCollisions) {
++                        return tested.getType() == EntityType.PILLAGER;
++                    } else {
++                        return false;
++                    }
++                }
++            }
++            if (tested.getType().getCategory() == MobCategory.MISC) {
++                if (org.icecreammc.icecream.configuration.IceCreamConfig.miscCollisions) {
++                    if (org.icecreammc.icecream.configuration.IceCreamConfig.villagerCollisions && org.icecreammc.icecream.configuration.IceCreamConfig.ironGolemCollisions && org.icecreammc.icecream.configuration.IceCreamConfig.itemCollisions) {
++                        return true;
++                    }
++                    if (!org.icecreammc.icecream.configuration.IceCreamConfig.villagerCollisions) {
++                        if (tested.getType() == EntityType.VILLAGER) {
++                            return false;
++                        }
++                    }
++                    if (!org.icecreammc.icecream.configuration.IceCreamConfig.ironGolemCollisions) {
++                        if (tested.getType() == EntityType.IRON_GOLEM) {
++                            return false;
++                        }
++                    }
++                    if (!org.icecreammc.icecream.configuration.IceCreamConfig.itemCollisions) {
++                        return tested.getType() != EntityType.ITEM;
++                    }
++                    return true;
++                } else {
++                    if (tested.getType() == EntityType.VILLAGER && org.icecreammc.icecream.configuration.IceCreamConfig.villagerCollisions) {
++                        return true;
++                    }
++                    if (tested.getType() == EntityType.IRON_GOLEM && org.icecreammc.icecream.configuration.IceCreamConfig.ironGolemCollisions) {
++                        return true;
++                    }
++                    return tested.getType() == EntityType.ITEM && org.icecreammc.icecream.configuration.IceCreamConfig.itemCollisions;
++                }
++            }
++            if (tested.getType().getCategory() == MobCategory.WATER_AMBIENT && org.icecreammc.icecream.configuration.IceCreamConfig.waterAmbientCollisions) {
++                return true;
++            }
++            if (tested.getType().getCategory() == MobCategory.WATER_CREATURE && org.icecreammc.icecream.configuration.IceCreamConfig.waterCreatureCillisions) {
++                return true;
++            }
++            if (tested.getType().getCategory() == MobCategory.UNDERGROUND_WATER_CREATURE && org.icecreammc.icecream.configuration.IceCreamConfig.undergroundWaterCreatureCollisions) {
++                return true;
++            }
++            return tested.getType().getCategory() == MobCategory.AXOLOTLS && org.icecreammc.icecream.configuration.IceCreamConfig.axolotlCollisions;
++        });
++    }
++}
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+index 55d31bfb9703c30d6aaaaef1fe71f20497e44a64..c26f5fc0747b74b2275a86a9f2f7051992b19bf4 100644
+--- a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+@@ -157,4 +157,37 @@ public class IceCreamConfig {
+     private static void  doNotProcessChatCommands() {
+         doNotProcessChatCommands = getBoolean("settings.do-not-process-chat-commands", doNotProcessChatCommands);
+     }
++    public static boolean playerCollisions = true;
++    public static boolean animalCollisions = true;
++    public static boolean ambientCollisions = true;
++    public static boolean monsterCollisions = true;
++    public static boolean villagerCollisions = true;
++    public static boolean pillagerCollisions = true;
++    public static boolean ironGolemCollisions = true;
++    public static boolean miscCollisions = true;
++    public static boolean itemCollisions = true;
++    public static boolean waterAmbientCollisions = true;
++    public static boolean waterCreatureCillisions = true;
++    public static boolean undergroundWaterCreatureCollisions = true;
++    public static boolean axolotlCollisions = true;
++    public static boolean allCollisionsEnabled = false;
++    private static void collisionSettings() {
++        playerCollisions = getBoolean("collisions.players", pillagerCollisions);
++        animalCollisions = getBoolean("collisions.animals", animalCollisions);
++        ambientCollisions = getBoolean("collisions.ambient", ambientCollisions);
++        monsterCollisions = getBoolean("collisions.monsters", monsterCollisions);
++        villagerCollisions = getBoolean("collisions.villagers", villagerCollisions);
++        pillagerCollisions = getBoolean("collisions.pillagers", pillagerCollisions);
++        ironGolemCollisions = getBoolean("collisions.iron-golems", ironGolemCollisions);
++        miscCollisions = getBoolean("collisions.misc", miscCollisions);
++        itemCollisions = getBoolean("collisions.items", itemCollisions);
++        waterAmbientCollisions = getBoolean("collisions.water-ambient", waterAmbientCollisions);
++        waterCreatureCillisions = getBoolean("collisions.water-creatures", waterCreatureCillisions);
++        undergroundWaterCreatureCollisions = getBoolean("collisions.underground-water-creatures", undergroundWaterCreatureCollisions);
++        axolotlCollisions = getBoolean("collisions.axolotls", ambientCollisions);
++
++        allCollisionsEnabled = playerCollisions && animalCollisions && ambientCollisions && monsterCollisions
++            && villagerCollisions && pillagerCollisions && ironGolemCollisions && miscCollisions && itemCollisions
++            && waterAmbientCollisions && waterCreatureCillisions && undergroundWaterCreatureCollisions && axolotlCollisions;
++    }
+ }
