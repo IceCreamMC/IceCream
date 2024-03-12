@@ -1,0 +1,47 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <152734075+Pancaksee@users.noreply.github.com>
+Date: Tue, 12 Mar 2024 03:39:35 +0000
+Subject: [PATCH] Farming Settings
+
+
+diff --git a/src/main/java/net/minecraft/world/level/block/FarmBlock.java b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+index 0c39126ce51439cce05747161aba43bce33a12d8..d0443752d2ced895c74ae789c387210549589e64 100644
+--- a/src/main/java/net/minecraft/world/level/block/FarmBlock.java
++++ b/src/main/java/net/minecraft/world/level/block/FarmBlock.java
+@@ -172,15 +172,15 @@ public class FarmBlock extends Block {
+         int yOff = pos.getY();
+         int zOff = pos.getZ();
+ 
+-        for (int dz = -4; dz <= 4; ++dz) {
++        for (int dz = -((ServerLevel) world).icecreamConfig.farmlandWaterSeekRange; dz <= ((ServerLevel) world).icecreamConfig.farmlandWaterSeekRange; ++dz) { // IceCream
+             int z = dz + zOff;
+-            for (int dx = -4; dx <= 4; ++dx) {
++            for (int dx = -((ServerLevel) world).icecreamConfig.farmlandWaterSeekRange; dx <= ((ServerLevel) world).icecreamConfig.farmlandWaterSeekRange; ++dx) { // IceCream
+                 int x = xOff + dx;
+                 for (int dy = 0; dy <= 1; ++dy) {
+                     int y = dy + yOff;
+                     net.minecraft.world.level.chunk.LevelChunk chunk = (net.minecraft.world.level.chunk.LevelChunk)world.getChunk(x >> 4, z >> 4);
+                     net.minecraft.world.level.material.FluidState fluid = chunk.getBlockStateFinal(x, y, z).getFluidState();
+-                    if (fluid.is(FluidTags.WATER)) {
++                    if (fluid.is(FluidTags.WATER) || (((ServerLevel) world).icecreamConfig.farmlandGetsMoistFromWaterCauldron && chunk.getBlockStateFinal(x, y, z).is(net.minecraft.world.level.block.Blocks.WATER_CAULDRON))) {
+                         return true;
+                     }
+                 }
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+index 45e478e0c28d095ff5e889bb35f1617395e71bb5..54e1475f6c3682b83a1ef6a3caf50516274973d2 100644
+--- a/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamWorldConfig.java
+@@ -77,4 +77,11 @@ public class IceCreamWorldConfig {
+         final Map<String, Object> value = IceCreamConfig.getMap("world-settings." + worldName + "." + path, null);
+         return value.isEmpty() ? fallback : value;
+     }
+-}
++
++    public int farmlandWaterSeekRange = 4;
++    public boolean farmlandGetsMoistFromWaterCauldron = false;
++    private void farmlandSettings() {
++        farmlandWaterSeekRange = getInt("blocks.farmland.water-seek-range", farmlandWaterSeekRange);
++        farmlandGetsMoistFromWaterCauldron = getBoolean("blocks.farmland.gets-moist-from-water-cauldron", farmlandGetsMoistFromWaterCauldron);
++    }
++}
+\ No newline at end of file
