@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <84547061+Pan-cakse@users.noreply.github.com>
+Date: Thu, 14 Mar 2024 03:23:19 +0000
+Subject: [PATCH] IceCream Server Dependencies
+
+
+diff --git a/build.gradle.kts b/build.gradle.kts
+index a4e810515873398d94421d0d6fc93912a1bfadb0..effb4f5341dfc15fdf67605a9dcfe43016cf58e1 100644
+--- a/build.gradle.kts
++++ b/build.gradle.kts
+@@ -49,6 +49,7 @@ dependencies {
+     apiAndDocs("net.kyori:adventure-text-serializer-legacy")
+     apiAndDocs("net.kyori:adventure-text-serializer-plain")
+     apiAndDocs("net.kyori:adventure-text-logger-slf4j")
++    apiAndDocs("org.spongepowered:mixin:0.8.5") // IceCream - server dependencies
+     api("org.apache.logging.log4j:log4j-api:$log4jVersion")
+     api("org.slf4j:slf4j-api:$slf4jVersion")
+     api("io.sentry:sentry:5.4.0") // Pufferfish
