@@ -1,5 +1,5 @@
 {
-  "image": ""ghcr.io/devcontainers/features/java:17": {}",
+  "image": "ghcr.io/devcontainers/features/java:17",
   "features": {
   }
 }
