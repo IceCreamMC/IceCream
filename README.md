@@ -68,4 +68,4 @@ Please Note on Windows use .\ instead of ./
 
 
 # bStats
-[![bStats](https://bstats.org/signatures/server-implementation/IceCreamMC.svg)](https://bstats.org/plugin/server-implementation/IceCreamMC/20724)
+[![bStats](https://bstats.org/signatures/server-implementation/IceCreamMC.svg)](https://bstats.org/plugin/server-implementation/IceCreamMC)
