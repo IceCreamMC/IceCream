@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakseyt@gmail.com>
+Date: Tue, 26 Mar 2024 05:24:53 +0000
+Subject: [PATCH] Remove Pufferfish Advertisements
+
+
+diff --git a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
+index 3fea9b69f4cfc94e7f01d4e3ca4ce7506a8e5d5c..4fbbed4807ee5cf8ff67e13006fb05022b46724b 100644
+--- a/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
++++ b/src/main/java/gg/pufferfish/pufferfish/PufferfishConfig.java
+@@ -64,9 +64,7 @@ public class PufferfishConfig {
+ 		getString("info.version", "1.0");
+ 		setComment("info",
+ 				"Pufferfish Configuration",
+-				"Check out Pufferfish Host for maximum performance server hosting: https://pufferfish.host",
+-				"Join our Discord for support: https://discord.gg/reZw4vQV9H",
+-				"Download new builds at https://ci.pufferfish.host/job/Pufferfish");
++				"Join our Discord for support: https://discord.gg/reZw4vQV9H");
+ 		
+ 		for (Method method : PufferfishConfig.class.getDeclaredMethods()) {
+ 			if (Modifier.isStatic(method.getModifiers()) && Modifier.isPrivate(method.getModifiers()) && method.getParameterCount() == 0 &&
