@@ -1,0 +1,139 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: James Smith <eesastudios@gmail.com>
+Date: Wed, 27 Mar 2024 07:08:31 +0000
+Subject: [PATCH] Villager Settings
+
+
+diff --git a/src/main/java/net/minecraft/world/entity/npc/Villager.java b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+index 50202286a0d83f7fe5331eb669d999718a9082cf..015e891c7c81a317566f1fc3a984a1ca392c446b 100644
+--- a/src/main/java/net/minecraft/world/entity/npc/Villager.java
++++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
+@@ -103,6 +103,7 @@ import org.bukkit.event.entity.VillagerReplenishTradeEvent;
+ public class Villager extends AbstractVillager implements ReputationEventHandler, VillagerDataHolder {
+
+     private static final Logger LOGGER = LogUtils.getLogger();
++    private final boolean simplerVillagersBehavior = org.icecreammc.icecream.configuration.IceCreamConfig.simplerVillagersBehavior;
+     private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(Villager.class, EntityDataSerializers.VILLAGER_DATA);
+     public static final int BREEDING_FOOD_THRESHOLD = 12;
+     public static final Map<Item, Integer> FOOD_POINTS = ImmutableMap.of(Items.BREAD, 4, Items.POTATO, 1, Items.CARROT, 1, Items.BEETROOT, 1);
+@@ -154,13 +155,48 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+     public Villager(EntityType<? extends Villager> entityType, Level world, VillagerType type) {
+         super(entityType, world);
+         this.gossips = new GossipContainer();
+-        ((GroundPathNavigation) this.getNavigation()).setCanOpenDoors(true);
+-        this.getNavigation().setCanFloat(true);
++        // IceCream start
++        if (simplerVillagersBehavior) {
++            initPathfinder();
++        } else {
++            ((GroundPathNavigation) this.getNavigation()).setCanOpenDoors(true);
++            this.getNavigation().setCanFloat(true);
++        }
++        // IceCream end
+         this.setCanPickUpLoot(true);
+         this.setVillagerData(this.getVillagerData().setType(type).setProfession(VillagerProfession.NONE));
+         if (level().purpurConfig.villagerFollowEmeraldBlock) this.goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.TemptGoal(this, 1.0D, TEMPT_ITEMS, false));
+     }
+
++    // IceCream start
++    protected void initPathfinder() {
++        if (!simplerVillagersBehavior) return;
++
++        this.goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.FloatGoal(this));
++
++        if (org.icecreammc.icecream.configuration.IceCreamConfig.villagersHideAtNight) {
++            this.goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.UseItemGoal<>(this, net.minecraft.world.item.alchemy.PotionUtils.setPotion(new ItemStack(Items.POTION), net.minecraft.world.item.alchemy.Potions.INVISIBILITY), SoundEvents.WANDERING_TRADER_DISAPPEARED, (villager) -> !this.level().isDay() && !villager.isInvisible()));
++            this.goalSelector.addGoal(0, new net.minecraft.world.entity.ai.goal.UseItemGoal<>(this, new ItemStack(Items.MILK_BUCKET), SoundEvents.WANDERING_TRADER_REAPPEARED, (villager) -> this.level().isDay() && villager.isInvisible()));
++        }
++
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.TradeWithPlayerGoal(this));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Zombie.class, 8.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Evoker.class, 12.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Vindicator.class, 8.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Vex.class, 8.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Pillager.class, 15.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.AvoidEntityGoal<>(this, net.minecraft.world.entity.monster.Illusioner.class, 12.0F, 0.5D, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.PanicGoal(this, 0.5D));
++        this.goalSelector.addGoal(1, new net.minecraft.world.entity.ai.goal.LookAtTradingPlayerGoal(this));
++        this.goalSelector.addGoal(2, new net.minecraft.world.entity.ai.goal.GolemRandomStrollInVillageGoal(this, 0.6D));
++        this.goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.MoveThroughVillageGoal(this, 0.6D, false, 4, () -> false));
++        this.goalSelector.addGoal(4, new net.minecraft.world.entity.ai.goal.MoveTowardsRestrictionGoal(this, 0.35D));
++        this.goalSelector.addGoal(8, new net.minecraft.world.entity.ai.goal.RandomStrollGoal(this, 0.35D));
++        this.goalSelector.addGoal(9, new net.minecraft.world.entity.ai.goal.InteractGoal(this, Player.class, 3.0F, 1.0F));
++        this.goalSelector.addGoal(10, new net.minecraft.world.entity.ai.goal.LookAtPlayerGoal(this, Player.class, 8.0F));
++    }
++    // IceCream end
++
+     // Purpur start
+     @Override
+     public boolean isRidable() {
+@@ -257,6 +293,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+
+     @Override
+     protected Brain<?> makeBrain(Dynamic<?> dynamic) {
++        if (simplerVillagersBehavior) return super.makeBrain(dynamic); // IceCream
+         Brain<Villager> behaviorcontroller = this.brainProvider().makeBrain(dynamic);
+
+         this.registerBrainGoals(behaviorcontroller);
+@@ -335,6 +372,28 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+     }
+     // Spigot End
+
++    // IceCream start
++    private VillagerProfession getRandomProfession() {
++        int type = random.nextInt(13);
++        return switch (type) {
++            case 0 -> VillagerProfession.ARMORER;
++            case 1 -> VillagerProfession.BUTCHER;
++            case 2 -> VillagerProfession.CARTOGRAPHER;
++            case 3 -> VillagerProfession.CLERIC;
++            case 4 -> VillagerProfession.FARMER;
++            case 5 -> VillagerProfession.FISHERMAN;
++            case 6 -> VillagerProfession.FLETCHER;
++            case 7 -> VillagerProfession.LEATHERWORKER;
++            case 8 -> VillagerProfession.LIBRARIAN;
++            case 9 -> VillagerProfession.MASON;
++            case 10 -> VillagerProfession.SHEPHERD;
++            case 11 -> VillagerProfession.TOOLSMITH;
++            case 12 -> VillagerProfession.WEAPONSMITH;
++            default -> VillagerProfession.FARMER;
++        };
++    }
++    // IceCream end
++
+     private int behaviorTick = 0; // Pufferfish
+     @Override
+     @Deprecated // Paper
+@@ -357,6 +416,13 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
+         } else if (this.isLobotomized && shouldRestock()) restock();
+         // Purpur end
+         //this.level().getProfiler().pop(); // Purpur
++        // IceCream start
++        if (simplerVillagersBehavior && this.getVillagerData().getProfession() == VillagerProfession.NONE) {
++            this.setVillagerData(this.getVillagerData().setProfession(getRandomProfession()));
++        }
++        if (simplerVillagersBehavior & canRestock()) catchUpDemand();
++        if (simplerVillagersBehavior) return;
++        // IceCream end
+         if (this.assignProfessionWhenSpawned) {
+             this.assignProfessionWhenSpawned = false;
+         }
+diff --git a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+index c26f5fc0747b74b2275a86a9f2f7051992b19bf4..befc8aec90382c61a287e88329e861bad7633b67 100644
+--- a/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
++++ b/src/main/java/org/icecreammc/icecream/configuration/IceCreamConfig.java
+@@ -157,6 +157,14 @@ public class IceCreamConfig {
+     private static void  doNotProcessChatCommands() {
+         doNotProcessChatCommands = getBoolean("settings.do-not-process-chat-commands", doNotProcessChatCommands);
+     }
++
++    public static boolean simplerVillagersBehavior = false;
++    public static boolean villagersHideAtNight = false;
++    private static void villagersSettings() {
++        simplerVillagersBehavior = getBoolean("settings.villagers.simpler-behavior", simplerVillagersBehavior);
++        villagersHideAtNight = getBoolean("settings.villagers.hide-at-night", villagersHideAtNight);
++    }
++
+     public static boolean playerCollisions = true;
+     public static boolean animalCollisions = true;
+     public static boolean ambientCollisions = true;
