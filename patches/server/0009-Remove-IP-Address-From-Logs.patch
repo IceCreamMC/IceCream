@@ -1,0 +1,21 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakseyt@gmail.com>
+Date: Thu, 28 Mar 2024 05:26:35 +0000
+Subject: [PATCH] Remove IP Address From Logs
+
+
+diff --git a/src/main/java/net/minecraft/server/players/PlayerList.java b/src/main/java/net/minecraft/server/players/PlayerList.java
+index ac1e0c66f167218306504db6037cc1d6509072a0..6955ed2125ce357c2fcd32a9ced4578a35e09d0c 100644
+--- a/src/main/java/net/minecraft/server/players/PlayerList.java
++++ b/src/main/java/net/minecraft/server/players/PlayerList.java
+@@ -488,8 +488,8 @@ public abstract class PlayerList {
+         }
+         // Paper end - Configurable player collision
+         org.purpurmc.purpur.task.BossBarTask.addToAll(player); // Purpur
+-        PlayerList.LOGGER.info("{}[{}] logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), s1, player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ());
+-    }
++        PlayerList.LOGGER.info("{} logged in with entity id {} at ([{}]{}, {}, {})", player.getName().getString(), player.getId(), worldserver1.serverLevelData.getLevelName(), player.getX(), player.getY(), player.getZ()); // IceCream - No IP Address In Logs
++        }
+ 
+     public void updateEntireScoreboard(ServerScoreboard scoreboard, ServerPlayer player) {
+         Set<Objective> set = Sets.newHashSet();

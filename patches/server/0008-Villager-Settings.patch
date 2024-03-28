@@ -1,5 +1,5 @@
 From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
-From: James Smith <eesastudios@gmail.com>
+From: Pancakse <pancakseyt@gmail.com>
 Date: Wed, 27 Mar 2024 07:08:31 +0000
 Subject: [PATCH] Villager Settings
 
@@ -10,7 +10,7 @@ index 50202286a0d83f7fe5331eb669d999718a9082cf..015e891c7c81a317566f1fc3a984a1ca
 +++ b/src/main/java/net/minecraft/world/entity/npc/Villager.java
 @@ -103,6 +103,7 @@ import org.bukkit.event.entity.VillagerReplenishTradeEvent;
  public class Villager extends AbstractVillager implements ReputationEventHandler, VillagerDataHolder {
-
+ 
      private static final Logger LOGGER = LogUtils.getLogger();
 +    private final boolean simplerVillagersBehavior = org.icecreammc.icecream.configuration.IceCreamConfig.simplerVillagersBehavior;
      private static final EntityDataAccessor<VillagerData> DATA_VILLAGER_DATA = SynchedEntityData.defineId(Villager.class, EntityDataSerializers.VILLAGER_DATA);
@@ -34,7 +34,7 @@ index 50202286a0d83f7fe5331eb669d999718a9082cf..015e891c7c81a317566f1fc3a984a1ca
          this.setVillagerData(this.getVillagerData().setType(type).setProfession(VillagerProfession.NONE));
          if (level().purpurConfig.villagerFollowEmeraldBlock) this.goalSelector.addGoal(3, new net.minecraft.world.entity.ai.goal.TemptGoal(this, 1.0D, TEMPT_ITEMS, false));
      }
-
+ 
 +    // IceCream start
 +    protected void initPathfinder() {
 +        if (!simplerVillagersBehavior) return;
@@ -68,17 +68,17 @@ index 50202286a0d83f7fe5331eb669d999718a9082cf..015e891c7c81a317566f1fc3a984a1ca
      @Override
      public boolean isRidable() {
 @@ -257,6 +293,7 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
-
+ 
      @Override
      protected Brain<?> makeBrain(Dynamic<?> dynamic) {
 +        if (simplerVillagersBehavior) return super.makeBrain(dynamic); // IceCream
          Brain<Villager> behaviorcontroller = this.brainProvider().makeBrain(dynamic);
-
+ 
          this.registerBrainGoals(behaviorcontroller);
 @@ -335,6 +372,28 @@ public class Villager extends AbstractVillager implements ReputationEventHandler
      }
      // Spigot End
-
+ 
 +    // IceCream start
 +    private VillagerProfession getRandomProfession() {
 +        int type = random.nextInt(13);
