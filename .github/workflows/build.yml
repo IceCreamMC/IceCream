@@ -3,7 +3,7 @@ name: Build IceCream
 on:
   push:
     branches:
-      - 'version/**'
+      - 'main'
 
 jobs:
   build:
