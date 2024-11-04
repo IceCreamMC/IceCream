@@ -15,6 +15,10 @@ subprojects {
         toolchain.languageVersion = JavaLanguageVersion.of(21)
     }
 
+    tasks.jar {
+        destinationDirectory.set(file("$buildDir/IceCream-Server/build/libs"))
+    }   
+
     tasks {
         withType<JavaCompile> {
             options.encoding = Charsets.UTF_8.name()
