@@ -7,6 +7,8 @@ plugins {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-releases/")
+    maven("https://repo.minebench.de/")
+    maven("https://libraries.minecraft.net/")
 }
 
 configurations.apiElements {
@@ -17,7 +19,9 @@ dependencies {
     mache(papierMache(properties["mache-build"] as String))
     paperclip("io.papermc:paperclip:3.0.3")
     implementation(project(":icecream-api"))
-    implementation("org.bstats:bstats-base:3.1.0")
+    implementation("com.mojang:brigadier:1.0.500")
+    implementation("com.mojang:jtracy:1.0.29")
+    implementation("com.microsoft.azure:msal4j:1.17.2")
     implementation(libs.adventure.text.serializer.ansi)
     implementation(libs.jline.terminal)
     implementation(libs.terminalConsoleAppender)
@@ -51,6 +55,11 @@ tasks {
     jar {
         indraGit.applyVcsInformationToManifest(manifest)
     }
+}
+
+tasks.compileJava {
+    options.compilerArgs.add("-Xlint:-deprecation")
+    options.isWarnings = false
 }
 
 afterEvaluate {

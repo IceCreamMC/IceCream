@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    `maven-publish`
 }
 
 subprojects {
@@ -15,9 +16,29 @@ subprojects {
         toolchain.languageVersion = JavaLanguageVersion.of(21)
     }
 
-    tasks.jar {
-        destinationDirectory.set(file("$buildDir/IceCream-Server/build/libs"))
-    }   
+
+publishing {
+    repositories {
+        maven {
+            url = uri("https://repo.icecreammc.xyz/releases")
+            credentials {
+                username = System.getenv("REPOSILITE_USERNAME")
+                password = System.getenv("REPOSILITE_PASSWORD")
+            }
+        }
+    }
+
+    publications {
+        maven(MavenPublication) {
+            groupId = "xyz.icecreammc.icecream"
+            artifactId = "icecream-api"
+            version = "1.0.0"
+:
+            artifact(file("IceCream-API/build/libs/icecream-api-1.21.1-SNAPSHOT.jar"))
+        }
+    }
+}
+
 
     tasks {
         withType<JavaCompile> {

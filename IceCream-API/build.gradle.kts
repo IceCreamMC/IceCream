@@ -34,7 +34,7 @@ java {
 tasks.register<JavaExec>("runApiGenerator") {
     doNotTrackState("Run api generator")
 
-    mainClass = "me.glicz.airflow.api.generator.Main"
+    mainClass = "xyz.icecreammc.icecream.api.generator.Main"
     classpath(project(":api-generator").sourceSets.main.get().runtimeClasspath)
 
     doFirst {
