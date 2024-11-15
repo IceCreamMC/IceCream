@@ -61,7 +61,7 @@ public class AirPluginsLoader implements PluginsLoader {
         plugins.forEach(file -> {
             try {
                 AirPluginClassLoader classLoader = new AirPluginClassLoader(file);
-                PluginMeta pluginMeta = new AirPluginMeta(classLoader.getResourceAsStream("airflow.yml"));
+                PluginMeta pluginMeta = new AirPluginMeta(classLoader.getResourceAsStream("icecream.yml"));
 
                 if (this.pluginMap.containsKey(pluginMeta.getName())) {
                     LOGGER.error("Cannot load {}, because plugin with name {} already exists", file.getName(), pluginMeta.getName());
@@ -84,7 +84,7 @@ public class AirPluginsLoader implements PluginsLoader {
             } catch (ConfigurateException e) {
                 LOGGER.atError()
                         .setCause(e)
-                        .log("Cannot load plugin {}, because of invalid plugin meta file (airflow.yml)", file.getName());
+                        .log("Cannot load plugin {}, because of invalid plugin meta file (icecream.yml)", file.getName());
             } catch (IllegalAccessException e) {
                 LOGGER.atError()
                         .setCause(e)

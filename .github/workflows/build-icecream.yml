@@ -26,6 +26,8 @@ jobs:
           ./gradlew applyPatches --stacktrace
       - name: Create Paperclip Jar
         run: ./gradlew createPaperclipJar --stacktrace
+      - name: Publish to Repo
+        run: ./gradlew publish
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:

@@ -1,5 +1,7 @@
 plugins {
     id("java-library")
+    id("maven-publish")
+    id("java")
 }
 
 val minecraftLibrary by configurations.registering
@@ -26,6 +28,27 @@ sourceSets {
     }
 }
 
+publishing {
+  repositories {
+    maven {
+      name = "icecreamRepo"
+      url = uri("https://repo.icecreammc.xyz/releases")
+      credentials(PasswordCredentials::class)
+      authentication {
+        create<BasicAuthentication>("basic")
+      }
+    }
+  }
+  publications {
+    create<MavenPublication>("maven") {
+      groupId = "xyz.icecreammc"
+      artifactId = "api"
+      version = "1.21.1-build.1"
+      from(components["java"])
+    }
+  }
+}
+
 java {
     withSourcesJar()
     withJavadocJar()
@@ -34,7 +57,7 @@ java {
 tasks.register<JavaExec>("runApiGenerator") {
     doNotTrackState("Run api generator")
 
-    mainClass = "me.glicz.airflow.api.generator.Main"
+    mainClass = "xyz.icecreammc.icecream.api.generator.Main"
     classpath(project(":api-generator").sourceSets.main.get().runtimeClasspath)
 
     doFirst {

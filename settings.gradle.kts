@@ -7,3 +7,5 @@ listOf("IceCream-API", "IceCream-Server").forEach { project ->
     include(name)
     findProject(":$name")?.projectDir = file(project)
 }
+
+include("api-generator", "test-plugin")
