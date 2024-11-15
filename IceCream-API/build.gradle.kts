@@ -35,9 +35,9 @@ publishing {
     maven {
       name = "ICECREAM"
       url = uri("https://repo.icecreammc.xyz/releases")
-      credentials {
-        username = System.getEnv("MAVEN_USER")
-        password = System.getEnv("MAVEN_SECRET")
+      credentials(PasswordCredentials::class)
+      authentication {
+        create<BasicAuthentication>("basic")
       }
     }
   }
