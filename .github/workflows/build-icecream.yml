@@ -29,8 +29,8 @@ jobs:
       - name: Publish to Repo
         run: ./gradlew publish
         env:
-          icecreamRepoUsername: ${{ secrets.ICECREAMREPOUSERNAME }}
-          icecreamRepoPassword: ${{ secrets.ICECREAMREPOPASSWORD }}
+          icecreamRepoUsername: ${{ secrets.MAVEN_USER }}
+          icecreamRepoPassword: ${{ secrets.MAVEN_SECRET }}
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
