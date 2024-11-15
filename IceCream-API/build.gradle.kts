@@ -1,3 +1,5 @@
+import java.lang.System
+
 plugins {
     id("java-library")
     id("maven-publish")
