@@ -45,7 +45,7 @@ publishing {
     create<MavenPublication>("maven") {
       groupId = "xyz.icecreammc"
       artifactId = "api"
-      version = "1.21.1-build.1"
+      version = "1.21.1-build.2"
       from(components["java"])
     }
   }
@@ -56,10 +56,15 @@ java {
     withJavadocJar()
 }
 
+tasks.compileJava {
+    options.compilerArgs.add("-Xlint:-deprecation")
+    options.isWarnings = false
+}
+
 tasks.register<JavaExec>("runApiGenerator") {
     doNotTrackState("Run api generator")
 
-    mainClass = "xyz.icecreammc.icecream.api.generator.Main"
+    mainClass = "me.glicz.airflow.api.generator.Main"
     classpath(project(":api-generator").sourceSets.main.get().runtimeClasspath)
 
     doFirst {

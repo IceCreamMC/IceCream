@@ -1,11 +1,11 @@
-package xyz.icecreammc.icecream.api.generator.entity;
+package me.glicz.airflow.api.generator.entity;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import xyz.icecreammc.icecream.api.entity.EntityTypeProvider;
-import xyz.icecreammc.icecream.api.generator.FieldBasedGenerator;
+import me.glicz.airflow.api.entity.EntityTypeProvider;
+import me.glicz.airflow.api.generator.FieldBasedGenerator;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class EntityTypesGenerator extends FieldBasedGenerator {
-    private static final String BASE_PACKAGE = "xyz.icecreammc.icecream.api.entity";
+    private static final String BASE_PACKAGE = "me.glicz.airflow.api.entity";
 
     public EntityTypesGenerator() {
         super(EntityType.class, BASE_PACKAGE, "EntityTypes", EntityTypeProvider.class);
@@ -43,11 +43,11 @@ public class EntityTypesGenerator extends FieldBasedGenerator {
 
         TypeName typeName;
         if (entity == net.minecraft.world.entity.player.Player.class) {
-            typeName = ClassName.get(xyz.icecreammc.icecream.api.entity.living.Player.class);
+            typeName = ClassName.get(me.glicz.airflow.api.entity.living.Player.class);
         } else {
-            Class<?> airEntity = entity.getMethod("getIceEntity").getReturnType();
+            Class<?> airEntity = entity.getMethod("getAirEntity").getReturnType();
 
-            String packageSuffix = airEntity.getPackageName().replace("xyz.icecreammc.icecream.entity", "");
+            String packageSuffix = airEntity.getPackageName().replace("me.glicz.airflow.entity", "");
             if (packageSuffix.startsWith(".")) {
                 packageSuffix = packageSuffix.substring(1);
             }
@@ -69,6 +69,6 @@ public class EntityTypesGenerator extends FieldBasedGenerator {
             typeName = ClassName.get(packageName, className);
         }
 
-        return ParameterizedTypeName.get(ClassName.get(xyz.icecreammc.icecream.api.entity.EntityType.class), typeName);
+        return ParameterizedTypeName.get(ClassName.get(me.glicz.airflow.api.entity.EntityType.class), typeName);
     }
 }

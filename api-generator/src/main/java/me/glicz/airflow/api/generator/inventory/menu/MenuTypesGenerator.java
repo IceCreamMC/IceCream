@@ -1,11 +1,11 @@
-package xyz.icecreammc.icecream.api.generator.inventory.menu;
+package me.glicz.airflow.api.generator.inventory.menu;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import xyz.icecreammc.icecream.api.generator.FieldBasedGenerator;
-import xyz.icecreammc.icecream.api.inventory.menu.MenuTypeProvider;
+import me.glicz.airflow.api.generator.FieldBasedGenerator;
+import me.glicz.airflow.api.inventory.menu.MenuTypeProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -18,7 +18,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class MenuTypesGenerator extends FieldBasedGenerator {
-    private static final String BASE_PACKAGE = "xyz.icecreammc.icecream.api.inventory.menu";
+    private static final String BASE_PACKAGE = "me.glicz.airflow.api.inventory.menu";
 
     public MenuTypesGenerator() {
         super(MenuType.class, BASE_PACKAGE, "MenuTypes", MenuTypeProvider.class);
@@ -41,9 +41,9 @@ public class MenuTypesGenerator extends FieldBasedGenerator {
         //noinspection unchecked
         Class<? extends AbstractContainerMenu> containerMenu = (Class<? extends AbstractContainerMenu>) ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
 
-        Class<?> airInventoryMenu = containerMenu.getMethod("getIceMenuView").getReturnType();
+        Class<?> airInventoryMenu = containerMenu.getMethod("getAirMenuView").getReturnType();
 
-        String packageSuffix = airInventoryMenu.getPackageName().replace("xyz.icecreammc.icecream.inventory.menu", "");
+        String packageSuffix = airInventoryMenu.getPackageName().replace("me.glicz.airflow.inventory.menu", "");
         if (packageSuffix.startsWith(".")) {
             packageSuffix = packageSuffix.substring(1);
         }
@@ -62,6 +62,6 @@ public class MenuTypesGenerator extends FieldBasedGenerator {
         String packageName = String.join(".", Arrays.copyOfRange(split, 0, split.length - 1));
         String className = split[split.length - 1];
 
-        return ParameterizedTypeName.get(ClassName.get(xyz.icecreammc.icecream.api.inventory.menu.MenuType.class), ClassName.get(packageName, className));
+        return ParameterizedTypeName.get(ClassName.get(me.glicz.airflow.api.inventory.menu.MenuType.class), ClassName.get(packageName, className));
     }
 }

@@ -1,4 +1,4 @@
-package xyz.icecreammc.icecream.api.generator;
+package me.glicz.airflow.api.generator;
 
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.TypeSpec;

@@ -1,14 +1,14 @@
-package xyz.icecreammc.icecream.api.generator;
+package me.glicz.airflow.api.generator;
 
 import joptsimple.OptionParser;
 import joptsimple.OptionSet;
 import joptsimple.OptionSpec;
-import xyz.icecreammc.icecream.api.generator.block.BlockTypesGenerator;
-import xyz.icecreammc.icecream.api.generator.block.state.BlockStatePropertiesGenerator;
-import xyz.icecreammc.icecream.api.generator.entity.EntityTypesGenerator;
-import xyz.icecreammc.icecream.api.generator.inventory.menu.MenuTypesGenerator;
-import xyz.icecreammc.icecream.api.generator.item.ItemTypesGenerator;
-import xyz.icecreammc.icecream.api.generator.item.component.ItemComponentTypesGenerator;
+import me.glicz.airflow.api.generator.block.BlockTypesGenerator;
+import me.glicz.airflow.api.generator.block.state.BlockStatePropertiesGenerator;
+import me.glicz.airflow.api.generator.entity.EntityTypesGenerator;
+import me.glicz.airflow.api.generator.inventory.menu.MenuTypesGenerator;
+import me.glicz.airflow.api.generator.item.ItemTypesGenerator;
+import me.glicz.airflow.api.generator.item.component.ItemComponentTypesGenerator;
 import net.minecraft.SharedConstants;
 import net.minecraft.server.Bootstrap;
 

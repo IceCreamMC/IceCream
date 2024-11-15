@@ -1,10 +1,10 @@
-package xyz.icecreammc.icecream.api.generator.block.state;
+package me.glicz.airflow.api.generator.block.state;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
-import xyz.icecreammc.icecream.api.block.state.BlockStateProperty;
-import xyz.icecreammc.icecream.api.block.state.BlockStatePropertyProvider;
-import xyz.icecreammc.icecream.api.generator.FieldBasedGenerator;
+import me.glicz.airflow.api.block.state.BlockStateProperty;
+import me.glicz.airflow.api.block.state.BlockStatePropertyProvider;
+import me.glicz.airflow.api.generator.FieldBasedGenerator;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
@@ -14,7 +14,7 @@ import javax.lang.model.element.Modifier;
 import java.lang.reflect.Field;
 
 public class BlockStatePropertiesGenerator extends FieldBasedGenerator {
-    private static final String BASE_PACKAGE = "xyz.icecreammc.icecream.api.block.state";
+    private static final String BASE_PACKAGE = "me.glicz.airflow.api.block.state";
 
     public BlockStatePropertiesGenerator() {
         super(BlockStateProperties.class, Property.class, BASE_PACKAGE, "BlockStateProperties", BlockStatePropertyProvider.class);

@@ -1,12 +1,12 @@
-package xyz.icecreammc.icecream.api.generator.item.component;
+package me.glicz.airflow.api.generator.item.component;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
-import xyz.icecreammc.icecream.api.generator.FieldBasedGenerator;
-import xyz.icecreammc.icecream.api.item.component.ItemComponentType;
-import xyz.icecreammc.icecream.api.item.component.ItemComponentTypeProvider;
+import me.glicz.airflow.api.generator.FieldBasedGenerator;
+import me.glicz.airflow.api.item.component.ItemComponentType;
+import me.glicz.airflow.api.item.component.ItemComponentTypeProvider;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 public class ItemComponentTypesGenerator extends FieldBasedGenerator {
-    private static final String BASE_PACKAGE = "xyz.icecreammc.icecream.api.item";
+    private static final String BASE_PACKAGE = "me.glicz.airflow.api.item";
     private static final Map<String, String> PACKAGE_MAPPING = Map.of(
             "world.item.component", ""
     );
