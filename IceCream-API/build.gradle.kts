@@ -31,7 +31,7 @@ sourceSets {
 publishing {
   repositories {
     maven {
-      name = "icecreamRepo"
+      name = "ICECREAM"
       url = uri("https://repo.icecreammc.xyz/releases")
       credentials(PasswordCredentials::class)
       authentication {
