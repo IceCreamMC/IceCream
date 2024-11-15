@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Properties>
+        <Property name="Gui">[%d{HH:mm:ss}] %-5level %msg{nolookups}%n</Property>
+        <Property name="Default">[%d{HH:mm:ss}] %highlight{%-5level} [%logger] %msg%n%xEx{full}</Property>
+        <Property name="NoLogger">[%d{HH:mm:ss}] %highlight{%-5level} %msg%n%xEx{full}</Property>
+    </Properties>
+    <Appenders>
+        <Queue name="ServerGuiConsole">
+            <PatternLayout pattern="%stripAnsi{${Gui}}"/>
+        </Queue>
+
+        <TerminalConsole name="TerminalConsole">
+            <PatternLayout>
+                <LoggerNamePatternSelector defaultPattern="${Default}">
+                    <PatternMatch key=",net.minecraft.,com.mojang.,me.glicz.airflow." pattern="${NoLogger}"/>
+                </LoggerNamePatternSelector>
+            </PatternLayout>
+        </TerminalConsole>
+
+        <RollingRandomAccessFile name="File" fileName="logs/latest.log" filePattern="logs/%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <LoggerNamePatternSelector defaultPattern="%stripAnsi{${Default}}">
+                    <PatternMatch key=",net.minecraft.,com.mojang.,me.glicz.airflow."
+                                  pattern="%stripAnsi{${NoLogger}}"/>
+                </LoggerNamePatternSelector>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <OnStartupTriggeringPolicy/>
+            </Policies>
+            <DefaultRolloverStrategy max="1000"/>
+        </RollingRandomAccessFile>
+
+        <Async name="Async">
+            <AppenderRef ref="File"/>
+            <AppenderRef ref="TerminalConsole" level="info"/>
+            <AppenderRef ref="ServerGuiConsole" level="info"/>
+        </Async>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="Async"/>
+        </Root>
+    </Loggers>
+</Configuration>
