@@ -32,3 +32,21 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: IceCream-Server/build/libs/IceCream-paperclip-*.jar
+      - name: Delete Draft Releases
+        if: "!contains(github.event.commits[0].message, '[release-skip]')"
+        continue-on-error: true
+        uses: hugo19941994/delete-draft-releases@v1.0.1
+        env:
+          GITHUB_TOKEN: ${{ secrets.TOKEN }}
+      - name: Create Release
+        if: "!contains(github.event.commits[0].message, '[release-skip]')"
+        continue-on-error: true
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: IceCream-Server/build/libs/IceCream-paperclip-*.jar
+          bodyFile: ${{ env.info }}
+          tag: ${{ env.tag }}
+          name: ${{ env.name }}
+          prerelease: ${{ env.pre }}
+          token: ${{ secrets.TOKEN }}
+          makeLatest: ${{ env.make_latest }}
