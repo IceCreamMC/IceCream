@@ -47,7 +47,7 @@ jobs:
           artifacts: IceCream-Server/build/libs/IceCream-paperclip-*.jar
           bodyFile: ${{ env.info }}
           tag: release
-          name: ${{ env.name }}
+          name: ICMC BUILD
           prerelease: ${{ env.pre }}
           token: ${{ secrets.TOKEN }}
           makeLatest: ${{ env.make_latest }}
