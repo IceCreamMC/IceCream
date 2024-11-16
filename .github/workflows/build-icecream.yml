@@ -28,6 +28,7 @@ jobs:
         run: ./gradlew createPaperclipJar --stacktrace
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
+        continue-on-error: true
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
