@@ -4,9 +4,12 @@
 
 
 ## How to make a plugin
-COMING SOON but we do have test plugin
+We got a test plugin
 https://github.com/IceCreamMC/TestPlugin
 
 ## How to compile
 1. ./gradlew applyPatches
 2. ./gradlew createPaperclipJar
+
+## bStats support?
+Coming soon
