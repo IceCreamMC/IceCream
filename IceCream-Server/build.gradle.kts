@@ -7,6 +7,7 @@ plugins {
 
 repositories {
     maven("https://repo.papermc.io/repository/maven-releases/")
+    maven("https://repo.papermc.io/repository/maven-public/")
     maven("https://repo.minebench.de/")
     maven("https://libraries.minecraft.net/")
 }
