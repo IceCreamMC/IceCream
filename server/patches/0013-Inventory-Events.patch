@@ -1,0 +1,46 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GliczDev <67753196+GliczDev@users.noreply.github.com>
+Date: Sat, 28 Sep 2024 17:04:56 +0200
+Subject: [PATCH] Inventory Events
+
+
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 21b917a2579dece25f61a0eae78bc1374c8bd306..3be4f767c5aa5f963a671bbf0cfa52de9b89ba24 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -1280,6 +1280,11 @@ public class ServerPlayer extends Player {
+             } else {
+                 // Airflow start - Inventory API
+                 abstractContainerMenu.getAirMenuView().setTitle(menu.getDisplayName());
++                // Airflow start - Inventory Events
++                me.glicz.airflow.api.event.inventory.menu.MenuOpenEvent event = getServer().getDedicatedServer().airflow.serverEventBus
++                        .dispatchMenuOpen(this, abstractContainerMenu);
++                if (event.isCancelled()) return OptionalInt.empty();
++                // Airflow end - Inventory Events
+                 abstractContainerMenu.getAirMenuView().openScreen();
+                 /*
+                 this.connection
+@@ -1335,6 +1340,7 @@ public class ServerPlayer extends Player {
+ 
+     @Override
+     public void doCloseContainer() {
++        getServer().getDedicatedServer().airflow.serverEventBus.dispatchMenuClose(this, this.containerMenu); // Airflow start - Inventory Events
+         this.containerMenu.removed(this);
+         this.inventoryMenu.transferState(this.containerMenu);
+         this.containerMenu = this.inventoryMenu;
+diff --git a/net/minecraft/world/inventory/AbstractContainerMenu.java b/net/minecraft/world/inventory/AbstractContainerMenu.java
+index dd5a0f589041c5c94e06745dee73d5ce411371f6..acdcf10e24a30816955f741cd31cc5fbb8559a8b 100644
+--- a/net/minecraft/world/inventory/AbstractContainerMenu.java
++++ b/net/minecraft/world/inventory/AbstractContainerMenu.java
+@@ -327,6 +327,11 @@ public abstract class AbstractContainerMenu {
+     }
+ 
+     public void clicked(int slotId, int button, ClickType clickType, Player player) {
++        // Airflow start - Inventory Events
++        me.glicz.airflow.api.event.inventory.InventoryClickEvent event = player.getServer().getDedicatedServer().airflow.serverEventBus
++                .dispatchInventoryClick(player, this, slotId);
++        if (event.isCancelled()) return;
++        // Airflow end - Inventory Events
+         try {
+             this.doClick(slotId, button, clickType, player);
+         } catch (Exception var8) {

@@ -1,0 +1,117 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GliczDev <67753196+GliczDev@users.noreply.github.com>
+Date: Wed, 28 Aug 2024 22:17:02 +0200
+Subject: [PATCH] Block API
+
+
+diff --git a/net/minecraft/world/level/block/Block.java b/net/minecraft/world/level/block/Block.java
+index 3cd8cb62bd8b09a5216bfc00c50cb13c676a4fec..5f380880e9c941550d9bc5e1a89f011eb44ef574 100644
+--- a/net/minecraft/world/level/block/Block.java
++++ b/net/minecraft/world/level/block/Block.java
+@@ -102,6 +102,7 @@ public class Block extends BlockBehaviour implements ItemLike {
+         map.defaultReturnValue((byte)127);
+         return map;
+     });
++    public final me.glicz.airflow.block.AirBlockType airBlockType = new me.glicz.airflow.block.AirBlockType(this); // Airflow - Block API
+ 
+     @Override
+     protected MapCodec<? extends Block> codec() {
+diff --git a/net/minecraft/world/level/block/state/BlockState.java b/net/minecraft/world/level/block/state/BlockState.java
+index 595c1e50afda097c5ddfa3635b654460869af45d..240ec9b76e4f9d8d0043b1f450639db877a2ddf5 100644
+--- a/net/minecraft/world/level/block/state/BlockState.java
++++ b/net/minecraft/world/level/block/state/BlockState.java
+@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.state.properties.Property;
+ 
+ public class BlockState extends BlockBehaviour.BlockStateBase {
+     public static final Codec<BlockState> CODEC = codec(BuiltInRegistries.BLOCK.byNameCodec(), Block::defaultBlockState).stable();
++    public final me.glicz.airflow.block.state.AirBlockState airBlockState = new me.glicz.airflow.block.state.AirBlockState(this); // Airflow - Block API
+ 
+     public BlockState(Block owner, Reference2ObjectArrayMap<Property<?>, Comparable<?>> values, MapCodec<BlockState> propertiesCodec) {
+         super(owner, values, propertiesCodec);
+diff --git a/net/minecraft/world/level/block/state/properties/BooleanProperty.java b/net/minecraft/world/level/block/state/properties/BooleanProperty.java
+index 18381e0453f2d84a31028381b65e131448cd8f3c..f50827e411bcf9d9907312400ca73111729ba0cf 100644
+--- a/net/minecraft/world/level/block/state/properties/BooleanProperty.java
++++ b/net/minecraft/world/level/block/state/properties/BooleanProperty.java
+@@ -12,6 +12,13 @@ public final class BooleanProperty extends Property<Boolean> {
+         super(name, Boolean.class);
+     }
+ 
++    // Airflow start - Block API
++    @Override
++    protected me.glicz.airflow.block.state.AirBlockStateProperty<?> createAirBlockStateProperty() {
++        return new me.glicz.airflow.block.state.AirBlockStateProperty.Boolean(this);
++    }
++    // Airflow end - Block API
++
+     @Override
+     public List<Boolean> getPossibleValues() {
+         return VALUES;
+diff --git a/net/minecraft/world/level/block/state/properties/EnumProperty.java b/net/minecraft/world/level/block/state/properties/EnumProperty.java
+index b1b7cf200a4a499f8d8d17f55afdfe65d312db6b..a2cff646380d615169767da8f97823c2896a5bc2 100644
+--- a/net/minecraft/world/level/block/state/properties/EnumProperty.java
++++ b/net/minecraft/world/level/block/state/properties/EnumProperty.java
+@@ -39,6 +39,13 @@ public final class EnumProperty<T extends Enum<T> & StringRepresentable> extends
+         }
+     }
+ 
++    // Airflow start - Block API
++    @Override
++    protected me.glicz.airflow.block.state.AirBlockStateProperty<?> createAirBlockStateProperty() {
++        return null;
++    }
++    // Airflow end - Block API
++
+     @Override
+     public List<T> getPossibleValues() {
+         return this.values;
+diff --git a/net/minecraft/world/level/block/state/properties/IntegerProperty.java b/net/minecraft/world/level/block/state/properties/IntegerProperty.java
+index a0251667beb07b9aa940ea814cc33b584d99b088..028cc7637a033e1e119191d782bd044cdda2162c 100644
+--- a/net/minecraft/world/level/block/state/properties/IntegerProperty.java
++++ b/net/minecraft/world/level/block/state/properties/IntegerProperty.java
+@@ -7,8 +7,10 @@ import java.util.stream.IntStream;
+ 
+ public final class IntegerProperty extends Property<Integer> {
+     private final IntImmutableList values;
+-    private final int min;
+-    private final int max;
++    // Airflow start - Block API
++    public final int min;
++    public final int max;
++    // Airflow end - Block API
+ 
+     private IntegerProperty(String name, int min, int max) {
+         super(name, Integer.class);
+@@ -23,6 +25,13 @@ public final class IntegerProperty extends Property<Integer> {
+         }
+     }
+ 
++    // Airflow start - Block API
++    @Override
++    protected me.glicz.airflow.block.state.AirBlockStateProperty<?> createAirBlockStateProperty() {
++        return new me.glicz.airflow.block.state.AirBlockStateProperty.Integer(this);
++    }
++    // Airflow end - Block API
++
+     @Override
+     public List<Integer> getPossibleValues() {
+         return this.values;
+diff --git a/net/minecraft/world/level/block/state/properties/Property.java b/net/minecraft/world/level/block/state/properties/Property.java
+index b9dbe3c04468c2761953b1dd0a4bd649b525261f..42db5f65af18f59a7b3c9051024a0418d5a951d0 100644
+--- a/net/minecraft/world/level/block/state/properties/Property.java
++++ b/net/minecraft/world/level/block/state/properties/Property.java
+@@ -23,12 +23,15 @@ public abstract class Property<T extends Comparable<T>> {
+             this::getName
+         );
+     private final Codec<Property.Value<T>> valueCodec = this.codec.xmap(this::value, Property.Value::value);
++    public final me.glicz.airflow.block.state.AirBlockStateProperty<?> airBlockStateProperty = createAirBlockStateProperty(); // Airflow - Block API
+ 
+     protected Property(String name, Class<T> clazz) {
+         this.clazz = clazz;
+         this.name = name;
+     }
+ 
++    protected abstract me.glicz.airflow.block.state.AirBlockStateProperty<?> createAirBlockStateProperty(); // Airflow - Block API
++
+     public Property.Value<T> value(T value) {
+         return new Property.Value<>(this, value);
+     }

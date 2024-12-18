@@ -12,11 +12,11 @@ import java.io.IOException;
 
 public abstract class Generator {
     public static final String CLASS_DOC = """
-            apiNote This class was automatically generated based on internal Minecraft registries. Its content might change in future versions.
+            @apiNote This class was automatically generated based on internal Minecraft registries. Its content might change in future versions.
             """;
     public static final String ENTRY_DOC = """
             {@code $L}
-            apiNote This field was automatically generated based on internal Minecraft registries. It might be removed in future versions.
+            @apiNote This field was automatically generated based on internal Minecraft registries. It might be removed in future versions.
             """;
     private static final int INDENT_SIZE = 4;
 

@@ -119,4 +119,4 @@ run/
 !gradle-wrapper.jar
 
 # IceCream
-IceCream-Server/src/internals/
+server/src/internals/

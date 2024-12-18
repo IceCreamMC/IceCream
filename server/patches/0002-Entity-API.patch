@@ -1,0 +1,155 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GliczDev <67753196+GliczDev@users.noreply.github.com>
+Date: Mon, 26 Aug 2024 15:13:50 +0200
+Subject: [PATCH] Entity API
+
+
+diff --git a/net/minecraft/server/level/ServerPlayer.java b/net/minecraft/server/level/ServerPlayer.java
+index 11ab2b939edbaf2b4e26c2cfa8c6c3b9a827e54d..82f3c121c67a50efbd99ebddd460d5550bfeaef9 100644
+--- a/net/minecraft/server/level/ServerPlayer.java
++++ b/net/minecraft/server/level/ServerPlayer.java
+@@ -333,6 +333,18 @@ public class ServerPlayer extends Player {
+         this.object = null;
+     }
+ 
++    // Airflow start - Entity API
++    @Override
++    protected me.glicz.airflow.entity.living.AirPlayer createAirEntity() {
++        return new me.glicz.airflow.entity.living.AirPlayer(this);
++    }
++
++    @Override
++    public me.glicz.airflow.entity.living.AirPlayer getAirEntity() {
++        return (me.glicz.airflow.entity.living.AirPlayer) super.getAirEntity();
++    }
++    // Airflow end - Entity API
++
+     @Override
+     public BlockPos adjustSpawnLocation(ServerLevel level, BlockPos pos) {
+         AABB aabb = this.getDimensions(Pose.STANDING).makeBoundingBox(Vec3.ZERO);
+@@ -1838,7 +1850,7 @@ public class ServerPlayer extends Player {
+ 
+     @Nullable
+     public Component getTabListDisplayName() {
+-        return null;
++        return super.getTabListDisplayName(); // Airflow - Entity API
+     }
+ 
+     public int getTabListOrder() {
+diff --git a/net/minecraft/world/entity/Entity.java b/net/minecraft/world/entity/Entity.java
+index 73d541d45e5ff8dbc6d823c04eff01833e5cda54..cfeeb62cd9c4ec02b1f37fa5767ba88680c3250d 100644
+--- a/net/minecraft/world/entity/Entity.java
++++ b/net/minecraft/world/entity/Entity.java
+@@ -250,6 +250,7 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+     private final List<Entity.Movement> movementThisTick = new ArrayList<>();
+     private final Set<BlockState> blocksInside = new ReferenceArraySet<>();
+     private final LongSet visitedBlocks = new LongOpenHashSet();
++    private final me.glicz.airflow.entity.AirEntity airEntity; // Airflow - Entity API
+ 
+     public Entity(EntityType<?> entityType, Level level) {
+         this.type = entityType;
+@@ -271,8 +272,19 @@ public abstract class Entity implements SyncedDataHolder, Nameable, EntityAccess
+         this.entityData = builder.build();
+         this.setPos(0.0, 0.0, 0.0);
+         this.eyeHeight = this.dimensions.eyeHeight();
++        this.airEntity = createAirEntity(); // Airflow - Entity API
+     }
+ 
++    // Airflow start - Entity API
++    protected me.glicz.airflow.entity.AirEntity createAirEntity() {
++        return new me.glicz.airflow.entity.AirEntity(this);
++    }
++
++    public me.glicz.airflow.entity.AirEntity getAirEntity() {
++        return this.airEntity;
++    }
++    // Airflow end - Entity API
++
+     public boolean isColliding(BlockPos pos, BlockState state) {
+         VoxelShape collisionShape = state.getCollisionShape(this.level(), pos, CollisionContext.of(this));
+         VoxelShape voxelShape = collisionShape.move(pos.getX(), pos.getY(), pos.getZ());
+diff --git a/net/minecraft/world/entity/EntityType.java b/net/minecraft/world/entity/EntityType.java
+index f24ddc2ece2cc311ead14268907083f883bd95eb..7e654df6d2a73a271910c298628e28af362bc75a 100644
+--- a/net/minecraft/world/entity/EntityType.java
++++ b/net/minecraft/world/entity/EntityType.java
+@@ -1069,6 +1069,7 @@ public class EntityType<T extends Entity> implements FeatureElement, EntityTypeT
+     private final EntityDimensions dimensions;
+     private final float spawnDimensionsScale;
+     private final FeatureFlagSet requiredFeatures;
++    public final me.glicz.airflow.entity.AirEntityType<?> airEntityType = new me.glicz.airflow.entity.AirEntityType<>(this); // Airflow - Entity API
+ 
+     private static <T extends Entity> EntityType<T> register(ResourceKey<EntityType<?>> resourceKey, EntityType.Builder<T> builder) {
+         return Registry.register(BuiltInRegistries.ENTITY_TYPE, resourceKey, builder.build(resourceKey));
+diff --git a/net/minecraft/world/entity/LivingEntity.java b/net/minecraft/world/entity/LivingEntity.java
+index 9d7bb347c441caeb5c087030db2a539b446e00e6..03f919d6be88962da306d17a1f7803ddd296aac5 100644
+--- a/net/minecraft/world/entity/LivingEntity.java
++++ b/net/minecraft/world/entity/LivingEntity.java
+@@ -281,6 +281,18 @@ public abstract class LivingEntity extends Entity implements Attackable {
+         this.brain = this.makeBrain(new Dynamic<>(nbtOps, nbtOps.createMap(ImmutableMap.of(nbtOps.createString("memories"), nbtOps.emptyMap()))));
+     }
+ 
++    // Airflow start - Entity API
++    @Override
++    protected me.glicz.airflow.entity.living.AirLivingEntity createAirEntity() {
++        return new me.glicz.airflow.entity.living.AirLivingEntity(this);
++    }
++
++    @Override
++    public me.glicz.airflow.entity.living.AirLivingEntity getAirEntity() {
++        return (me.glicz.airflow.entity.living.AirLivingEntity) super.getAirEntity();
++    }
++    // Airflow end - Entity API
++
+     public Brain<?> getBrain() {
+         return this.brain;
+     }
+diff --git a/net/minecraft/world/entity/Mob.java b/net/minecraft/world/entity/Mob.java
+index fe566bcd9387e9d91bc9c0eb29dc81d7b0be25bc..f49655fc3ca9ae82e7249ae89db5a54bca4f887d 100644
+--- a/net/minecraft/world/entity/Mob.java
++++ b/net/minecraft/world/entity/Mob.java
+@@ -150,6 +150,18 @@ public abstract class Mob extends LivingEntity implements EquipmentUser, Leashab
+         }
+     }
+ 
++    // Airflow start - Entity API
++    @Override
++    protected me.glicz.airflow.entity.living.AirMob createAirEntity() {
++        return new me.glicz.airflow.entity.living.AirMob(this);
++    }
++
++    @Override
++    public me.glicz.airflow.entity.living.AirMob getAirEntity() {
++        return (me.glicz.airflow.entity.living.AirMob) super.getAirEntity();
++    }
++    // Airflow end - Entity API
++
+     protected void registerGoals() {
+     }
+ 
+diff --git a/net/minecraft/world/entity/player/Player.java b/net/minecraft/world/entity/player/Player.java
+index 658f3372785d490610e2a68601a63d88abfa75dd..07f49c1e0ba835772b3346623535c37b93bd817d 100644
+--- a/net/minecraft/world/entity/player/Player.java
++++ b/net/minecraft/world/entity/player/Player.java
+@@ -209,6 +209,22 @@ public abstract class Player extends LivingEntity {
+         this.rotOffs = 180.0F;
+     }
+ 
++    // Airflow start - Entity API
++    @Override
++    protected me.glicz.airflow.entity.living.AirHumanoid createAirEntity() {
++        return null;
++    }
++
++    @Override
++    public me.glicz.airflow.entity.living.AirHumanoid getAirEntity() {
++        return (me.glicz.airflow.entity.living.AirHumanoid) super.getAirEntity();
++    }
++
++    public Component getTabListDisplayName() {
++        return getAirEntity().getServer().componentSerializer().serializeOrNull(getAirEntity().getPlayerListName());
++    }
++    // Airflow end - Entity API
++
+     public boolean blockActionRestricted(Level level, BlockPos pos, GameType gameMode) {
+         if (!gameMode.isBlockPlacingRestricted()) {
+             return false;

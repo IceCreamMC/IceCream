@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GliczDev <67753196+GliczDev@users.noreply.github.com>
+Date: Sat, 14 Sep 2024 18:07:14 +0200
+Subject: [PATCH] Scheduler API
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index dccb8937e909a1f22164a458c09413374b76fb7e..27a0456799eee616b2d02655595ecd091c8cb871 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1046,6 +1046,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+     protected void tickChildren(BooleanSupplier hasTimeLeft) {
+         ProfilerFiller profilerFiller = Profiler.get();
+         this.getPlayerList().getPlayers().forEach(serverPlayer1 -> serverPlayer1.connection.suspendFlushing());
++        getDedicatedServer().airflow.getServer().serverScheduler.tick(); // Airflow - Scheduler API
+         profilerFiller.push("commandFunctions");
+         this.getFunctions().tick();
+         profilerFiller.popPush("levels");

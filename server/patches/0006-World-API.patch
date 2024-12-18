@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: GliczDev <67753196+GliczDev@users.noreply.github.com>
+Date: Fri, 30 Aug 2024 20:51:42 +0200
+Subject: [PATCH] World API
+
+
+diff --git a/net/minecraft/server/level/ServerLevel.java b/net/minecraft/server/level/ServerLevel.java
+index 7900900822e1ae6bf854c4e8c19a98182acaab5c..22af11e00bbe13b096119dd583ac365b27cc2943 100644
+--- a/net/minecraft/server/level/ServerLevel.java
++++ b/net/minecraft/server/level/ServerLevel.java
+@@ -208,6 +208,7 @@ public class ServerLevel extends Level implements ServerEntityGetter, WorldGenLe
+     private final StructureCheck structureCheck;
+     private final boolean tickTime;
+     private final RandomSequences randomSequences;
++    public final me.glicz.airflow.world.AirWorld airWorld = new me.glicz.airflow.world.AirWorld(this); // Airflow - World API
+ 
+     public ServerLevel(
+         MinecraftServer server,
