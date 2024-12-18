@@ -33,6 +33,3 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           path: IceCream-Server/build/libs/IceCream-paperclip-*.jar
-      - name: Delete Draft Releases
-        if: "!contains(github.event.commits[0].message, '[release-skip]')"
-        continue-on-error: true
