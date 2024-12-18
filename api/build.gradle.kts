@@ -1,5 +1,6 @@
 plugins {
     id("java-library")
+    id("maven-publish")
 }
 
 val minecraftLibrary by configurations.registering
@@ -15,6 +16,28 @@ dependencies {
         exclude("com.google.guava", "guava")
     }
 }
+
+publishing {
+  repositories {
+    maven {
+      name = "ICECREAM"
+      url = uri("https://repo.icecreammc.xyz/releases")
+      credentials(PasswordCredentials::class)
+      authentication {
+        create<BasicAuthentication>("basic")
+      }
+    }
+  }
+  publications {
+    create<MavenPublication>("maven") {
+      groupId = "xyz.icecreammc"
+      artifactId = "api"
+      version = "1.21.4-build.1"
+      from(components["java"])
+    }
+  }
+}
+
 
 val generatedDir = "src/generated/java"
 
