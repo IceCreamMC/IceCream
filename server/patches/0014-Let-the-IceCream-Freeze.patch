@@ -1,0 +1,97 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakse@icecreammc.xyz>
+Date: Thu, 19 Dec 2024 15:43:59 -0700
+Subject: [PATCH] Let the IceCream Freeze
+
+
+diff --git a/net/minecraft/server/Eula.java b/net/minecraft/server/Eula.java
+index 1f0413214f54e9a47f53c623484d6882c85f54c9..a2d5a89cd722e2823731a3e5ba261e5959252641 100644
+--- a/net/minecraft/server/Eula.java
++++ b/net/minecraft/server/Eula.java
+@@ -46,7 +46,7 @@ public class Eula {
+             try (OutputStream outputStream = Files.newOutputStream(this.file)) {
+                 Properties map = new Properties();
+                 map.setProperty("eula", "false");
+-                map.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (" + CommonLinks.EULA + ").");
++                map.store(outputStream, "By changing the setting below to TRUE you are indicating your agreement to the Minecraft EULA (" + CommonLinks.EULA + ").");
+             } catch (Exception var6) {
+                 LOGGER.warn("Failed to save {}", this.file, var6);
+             }
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index df535a87ae486c1585132c06383a264c4fa2d26f..1dde3e176d7e1f894934e9c0f2e7eb242fdf00fa 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -120,7 +120,7 @@ public class Main {
+             }
+ 
+             if (!eula.hasAgreedToEULA()) {
+-                LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.");
++                LOGGER.info("You need to agree to the EULA in order to run the IceCream server. Go to eula.txt for more info.");
+                 return;
+             }
+ 
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index ce6f381dbd8fbe0c444fa1d9cbb3ddea9ebda4e5..c65ace773ed0ea7d47f075c16fa52dc4b5e2d627 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1178,7 +1178,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     @DontObfuscate
+     public String getServerModName() {
+-        return "Airflow"; // Airflow
++        return "IceCream"; // Airflow // IceCream
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport systemReport) {
+diff --git a/net/minecraft/server/gui/MinecraftServerGui.java b/net/minecraft/server/gui/MinecraftServerGui.java
+index 2da10418a1328773bb7a52da1347fbc8819533d0..1dd3b644cd37e851221b2b46c9fc0cb00b7a557f 100644
+--- a/net/minecraft/server/gui/MinecraftServerGui.java
++++ b/net/minecraft/server/gui/MinecraftServerGui.java
+@@ -6,6 +6,7 @@ import com.mojang.logging.LogUtils;
+ import java.awt.BorderLayout;
+ import java.awt.Dimension;
+ import java.awt.Font;
++import java.util.Objects; // IceCream
+ import java.awt.event.FocusAdapter;
+ import java.awt.event.FocusEvent;
+ import java.awt.event.WindowAdapter;
+@@ -33,8 +34,8 @@ import org.slf4j.Logger;
+ public class MinecraftServerGui extends JComponent {
+     private static final Font MONOSPACED = new Font("Monospaced", 0, 12);
+     private static final Logger LOGGER = LogUtils.getLogger();
+-    private static final String TITLE = "Minecraft server";
+-    private static final String SHUTDOWN_TITLE = "Minecraft server - shutting down!";
++    private static final String TITLE = "IceCream Minecraft server";
++    private static final String SHUTDOWN_TITLE = "IceCream Minecraft server - shutting down!";
+     private final DedicatedServer server;
+     private Thread logAppenderThread;
+     private final Collection<Runnable> finalizers = Lists.newArrayList();
+@@ -46,18 +47,26 @@ public class MinecraftServerGui extends JComponent {
+         } catch (Exception var3) {
+         }
+ 
+-        final JFrame jFrame = new JFrame("Minecraft server");
++        final JFrame jFrame = new JFrame("IceCream Minecraft server");
+         final MinecraftServerGui minecraftServerGui = new MinecraftServerGui(server);
+         jFrame.setDefaultCloseOperation(2);
+         jFrame.add(minecraftServerGui);
+         jFrame.pack();
+         jFrame.setLocationRelativeTo(null);
+         jFrame.setVisible(true);
++
++        // IceCream start - Improve Server GUI
++        try {
++            jFrame.setIconImage(javax.imageio.ImageIO.read(Objects.requireNonNull(MinecraftServerGui.class.getClassLoader().getResourceAsStream("logo.png"))));
++        } catch (java.io.IOException ignore) {
++        }
++        // IceCream end - Improve Server GUI
++
+         jFrame.addWindowListener(new WindowAdapter() {
+             @Override
+             public void windowClosing(WindowEvent event) {
+                 if (!minecraftServerGui.isClosing.getAndSet(true)) {
+-                    jFrame.setTitle("Minecraft server - shutting down!");
++                    jFrame.setTitle("IceCream Minecraft server - shutting down!");
+                     server.halt(true);
+                     minecraftServerGui.runFinalizers();
+                 }

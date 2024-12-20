@@ -12,6 +12,8 @@ configurations.api {
 dependencies {
     api(libs.bundles.adventure)
     api(libs.configurate)
+    api("org.yaml:snakeyaml:2.3")
+    implementation("org.spongepowered:mixin:0.8.7")
     api(libs.guice) {
         exclude("com.google.guava", "guava")
     }

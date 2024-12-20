@@ -17,6 +17,8 @@ dependencies {
     mache(paperMache(properties["mache-build"] as String))
     paperclip(libs.paperclip)
     implementation(project(":api"))
+    implementation("org.yaml:snakeyaml:2.3")
+    implementation("org.spongepowered:mixin:0.8.7")
     implementation(libs.adventure.text.serializer.ansi)
     implementation(libs.jline.terminal)
     implementation(libs.terminalConsoleAppender)
@@ -31,6 +33,11 @@ sourceSets {
             srcDir(internalsDir)
         }
     }
+}
+
+tasks.compileJava {
+    options.compilerArgs.add("-Xlint:-deprecation")
+    options.isWarnings = false
 }
 
 airplane {
