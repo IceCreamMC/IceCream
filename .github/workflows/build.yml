@@ -26,9 +26,12 @@ jobs:
           ./gradlew applyPatches --stacktrace
       - name: Create Paperclip Jar
         run: ./gradlew createPaperclipJar --stacktrace
-      - name: Publish to Repo
-        run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
-        continue-on-error: true
+      - name: Upload Artifacts
+        if: env.debug == 'true' || github.ref_name != env.branch
+        uses: actions/upload-artifact@main
+        with:
+          name: Artifacts
+          path: build/libs
       - name: Release
         if: github.ref_name == env.branch
         uses: marvinpinto/action-automatic-releases@latest
@@ -38,3 +41,6 @@ jobs:
           repo_token: "${{ secrets.TOKEN }}"
           files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
           prerelease: true
+      - name: Publish to Repo
+        run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
+        continue-on-error: true
