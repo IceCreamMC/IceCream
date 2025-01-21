@@ -27,21 +27,13 @@ jobs:
       - name: Create Paperclip Jar
         run: ./gradlew createPaperclipJar --stacktrace
       - name: Upload Artifacts
-        if: env.debug == 'true' || github.ref_name != env.branch
-        uses: actions/upload-artifact@main
+        uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          name: Artifacts
-          path: server/build/libs
-      - name: Create Release
-        uses: ncipollo/release-action@v1.15.0
-        with:
-          artifacts: server/build/libs
-          bodyFile: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
-          tag: release
-          name: ${{ env.name }}
-          prerelease: ${{ env.experimental }}
-          token: ${{ secrets.TOKEN }}
-          makeLatest: ${{ env.make_latest }}
+          repo_token: "${{ secrets.TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: false
+          title: "Build"
+          files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
         continue-on-error: true
