@@ -35,6 +35,6 @@ jobs:
         with:
           title: "Release #${{ env.workflow }}"
           automatic_release_tag: latest-${{ env.version }}
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          repo_token: "${{ secrets.TOKEN }}"
           files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
           prerelease: true
