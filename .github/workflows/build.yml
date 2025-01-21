@@ -29,7 +29,12 @@ jobs:
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
         continue-on-error: true
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
+      - name: Release
+        if: github.ref_name == env.branch
+        uses: marvinpinto/action-automatic-releases@latest
         with:
-          path: server/build/libs/IceCream-paperclip-*.jar
+          title: "Release #${{ env.workflow }}"
+          automatic_release_tag: latest-${{ env.version }}
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
+          prerelease: true
