@@ -1,0 +1,33 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakse@icecreammc.xyz>
+Date: Mon, 20 Jan 2025 23:43:26 -0700
+Subject: [PATCH] Add CommandLine EULA flag
+
+This code is from SpigotMC!
+This flag contains the same message as eula.txt (albeit with proper grammar for 3rd person plural). By setting this flag you are agreeing to the terms listed in the message printed upon setting this flag, which are no different from those agreed to by any other method.
+
+This feature only exists for hosting companies and people who manage servers in bulk who wish to agree to the terms by setting a flag in a script.
+
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index 1dde3e176d7e1f894934e9c0f2e7eb242fdf00fa..dcf3a3a24033bd8a1cd3d28abe49d4ab68485bc1 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -119,7 +119,17 @@ public class Main {
+                 return;
+             }
+ 
+-            if (!eula.hasAgreedToEULA()) {
++            // This EULA flag is from Spigot so credits to them!
++            // IceCream start
++            boolean eulaAgreed = Boolean.getBoolean( "com.mojang.eula.agree" );
++            if ( eulaAgreed )
++            {
++                System.err.println( "You have used the IceCream's command line EULA agreement flag." );
++                System.err.println( "By using this setting you are indicating your agreement to Mojang's EULA (https://account.mojang.com/documents/minecraft_eula)." );
++                System.err.println( "If you do not agree to the above EULA please stop your server and remove this flag immediately." );
++            }
++            // IceCream end
++            if (!eula.hasAgreedToEULA() && !eulaAgreed) { // IceCream
+                 LOGGER.info("You need to agree to the EULA in order to run the IceCream server. Go to eula.txt for more info.");
+                 return;
+             }
