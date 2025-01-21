@@ -32,24 +32,16 @@ jobs:
         with:
           name: Artifacts
           path: server/build/libs
-      - name: Release Artifacts
-        if: github.ref_name == env.branch
-        uses: marvinpinto/action-automatic-releases@latest
+      - name: Create Release
+        uses: ncipollo/release-action@v1.15.0
         with:
-          title: "Release #${{ env.workflow }}"
-          automatic_release_tag: release-${{ env.workflow }}
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
-          prerelease: false
-      - name: Release (Latest)
-        if: github.ref_name == env.branch
-        uses: marvinpinto/action-automatic-releases@latest
-        with:
-          title: "Release #${{ env.workflow }}"
-          automatic_release_tag: latest-${{ env.version }}
-          repo_token: "${{ secrets.TOKEN }}"
-          files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
-          prerelease: false
+          artifacts: server/build/libs
+          bodyFile: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
+          tag: ${{ env.tag }}
+          name: ${{ env.name }}
+          prerelease: ${{ env.experimental }}
+          token: ${{ secrets.TOKEN }}
+          makeLatest: ${{ env.make_latest }}
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
         continue-on-error: true
