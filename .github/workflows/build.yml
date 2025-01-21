@@ -32,7 +32,7 @@ jobs:
           repo_token: "${{ secrets.TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: false
-          title: "Build"
+          title: "Build ${{ env.release_name }}"
           files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
