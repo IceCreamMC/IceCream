@@ -23,7 +23,6 @@ dependencies {
     implementation(project(":api"))
     implementation("org.yaml:snakeyaml:2.3")
     implementation("org.spongepowered:mixin:0.8.7")
-    implementation("io.papermc.paperweight:paperweight-core:1.3.6")
     implementation(libs.adventure.text.serializer.ansi)
     implementation("org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
     implementation(libs.jline.terminal)
