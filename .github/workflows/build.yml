@@ -31,6 +31,7 @@ jobs:
         with:
           token: ${{ secrets.TOKEN }}
           makeLatest: true
+          tag: ${{ steps.next.outputs.version }}
           artifacts: "server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar"
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
