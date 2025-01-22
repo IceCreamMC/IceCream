@@ -19,21 +19,19 @@ jobs:
           architecture: x64
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
-      - name: Apply Patches
-        run: |
+      - name: Apply Patches        
+        run: ./gradlew applyPatches
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
           ./gradlew applyPatches --stacktrace
       - name: Create Paperclip Jar
         run: ./gradlew createPaperclipJar --stacktrace
-      - name: Upload Artifacts
-        uses: "marvinpinto/action-automatic-releases@latest"
+      - name: Release
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: false
-          title: "Build ${{ env.release_name }}"
-          files: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
+          token: ${{ secrets.TOKEN }}
+          makeLatest: true
+          artifacts: "server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar"
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
         continue-on-error: true
