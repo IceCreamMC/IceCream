@@ -3,7 +3,7 @@ name: Build IceCream
 on:
   push:
     tags:
-    - 'build'
+    - '*'
     branches:
       - 'main'
 
