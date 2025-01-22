@@ -23,6 +23,8 @@ dependencies {
     implementation(project(":api"))
     implementation("org.yaml:snakeyaml:2.3")
     implementation("org.spongepowered:mixin:0.8.7")
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+    testImplementation("ch.qos.logback:logback-classic:1.5.16")
     implementation(libs.adventure.text.serializer.ansi)
     implementation("org.eclipse.jgit:org.eclipse.jgit:7.1.0.202411261347-r")
     implementation(libs.jline.terminal)

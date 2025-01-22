@@ -1,0 +1,18 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakse@icecreammc.xyz>
+Date: Wed, 22 Jan 2025 15:40:56 -0700
+Subject: [PATCH] IceCream Configuration
+
+
+diff --git a/net/minecraft/server/Main.java b/net/minecraft/server/Main.java
+index dcf3a3a24033bd8a1cd3d28abe49d4ab68485bc1..5737c403b77e0b0727f845f26cad7b6e00882f5e 100644
+--- a/net/minecraft/server/Main.java
++++ b/net/minecraft/server/Main.java
+@@ -114,6 +114,7 @@ public class Main {
+             RegionFileVersion.configure(dedicatedServerSettings.getProperties().regionFileComression);
+             Path path2 = Paths.get("eula.txt");
+             Eula eula = new Eula(path2);
++            xyz.icecreammc.icecream.config.IceCreamConfig.getInstance(); // IceCream - Configuration
+             if (optionSet.has(optionSpec1)) {
+                 LOGGER.info("Initialized '{}' and '{}'", path1.toAbsolutePath(), path2.toAbsolutePath());
+                 return;
