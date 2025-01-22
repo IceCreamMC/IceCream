@@ -33,6 +33,7 @@ jobs:
         uses: ncipollo/release-action@v1
         with:
           artifacts: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
+          tag: build 
           name: Build ${{ steps.next.outputs.version }}
           prerelease: false
           token: ${{ secrets.TOKEN }}
