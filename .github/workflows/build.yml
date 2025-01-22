@@ -26,6 +26,16 @@ jobs:
           ./gradlew applyPatches --stacktrace
       - name: Create Paperclip Jar
         run: ./gradlew createPaperclipJar --stacktrace
+      - name: Create Release
+        continue-on-error: true
+        uses: ncipollo/release-action@v1
+        with:
+          artifacts: server/build/libs/IceCream-paperclip-1.21.4-SNAPSHOT.jar
+          tag: ${{ steps.next.outputs.version }
+          name: Build ${{ steps.next.outputs.version }}
+          prerelease: false
+          token: ${{ secrets.TOKEN }}
+          makeLatest: true
       - name: Publish to Repo
         run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
         continue-on-error: true
