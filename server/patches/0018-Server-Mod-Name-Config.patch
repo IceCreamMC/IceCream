@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakse@icecreammc.xyz>
+Date: Wed, 22 Jan 2025 21:10:53 -0700
+Subject: [PATCH] Server Mod Name Config
+
+
+diff --git a/net/minecraft/server/MinecraftServer.java b/net/minecraft/server/MinecraftServer.java
+index c65ace773ed0ea7d47f075c16fa52dc4b5e2d627..22011e304b5cfb874356a77e2e2175264311ec23 100644
+--- a/net/minecraft/server/MinecraftServer.java
++++ b/net/minecraft/server/MinecraftServer.java
+@@ -1178,7 +1178,7 @@ public abstract class MinecraftServer extends ReentrantBlockableEventLoop<TickTa
+ 
+     @DontObfuscate
+     public String getServerModName() {
+-        return "IceCream"; // Airflow // IceCream
++        return xyz.icecreammc.icecream.config.IceCreamConfig.getInstance().SERVER_MOD_NAME.getValue(); // IceCream - Server Mod Name Config
+     }
+ 
+     public SystemReport fillSystemReport(SystemReport systemReport) {

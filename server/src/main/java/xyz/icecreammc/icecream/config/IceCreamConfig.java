@@ -4,6 +4,7 @@ import org.jetbrains.annotations.NotNull;
 import xyz.icecreammc.icecream.config.value.Value;
 import xyz.icecreammc.icecream.config.value.types.BooleanValue;
 import xyz.icecreammc.icecream.config.value.types.IntValue;
+import xyz.icecreammc.icecream.config.value.types.StringValue;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -36,5 +37,6 @@ public class IceCreamConfig extends AbstractConfig {
 
     // Config Values
     public final BooleanValue SHEAR_IN_DISPENSER_UNLIMITED_USE = new BooleanValue("misc.shear-in-dispenser-unlimited-use", false, "If true when a shear is in a dispenser it can be used forever.");
+    public final StringValue SERVER_MOD_NAME = new StringValue("settings.server-mod-name", "IceCream", "Lets you change the server mod name.");
     // Config Values
 }
