@@ -33,4 +33,8 @@ public class IceCreamConfig extends AbstractConfig {
         }, fileName, 2);
         load();
     }
+
+    // Config Values
+    public final BooleanValue SHEAR_IN_DISPENSER_UNLIMITED_USE = new BooleanValue("misc.shear-in-dispenser-unlimited-use", false, "If true when a shear is in a dispenser it can be used forever.");
+    // Config Values
 }

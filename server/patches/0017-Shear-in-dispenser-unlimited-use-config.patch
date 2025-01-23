@@ -1,0 +1,19 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakse@icecreammc.xyz>
+Date: Wed, 22 Jan 2025 18:39:00 -0700
+Subject: [PATCH] Shear in dispenser unlimited use config
+
+
+diff --git a/net/minecraft/core/dispenser/ShearsDispenseItemBehavior.java b/net/minecraft/core/dispenser/ShearsDispenseItemBehavior.java
+index 0834e2184b5c691bc0cc46586c377fa18b1b236d..88f62f7e0b86f8807d7a0be66b6755cd119dbc98 100644
+--- a/net/minecraft/core/dispenser/ShearsDispenseItemBehavior.java
++++ b/net/minecraft/core/dispenser/ShearsDispenseItemBehavior.java
+@@ -23,7 +23,7 @@ public class ShearsDispenseItemBehavior extends OptionalDispenseItemBehavior {
+         if (!serverLevel.isClientSide()) {
+             BlockPos blockPos = blockSource.pos().relative(blockSource.state().getValue(DispenserBlock.FACING));
+             this.setSuccess(tryShearBeehive(serverLevel, blockPos) || tryShearLivingEntity(serverLevel, blockPos, item));
+-            if (this.isSuccess()) {
++            if (this.isSuccess() && !xyz.icecreammc.icecream.config.IceCreamConfig.getInstance().SHEAR_IN_DISPENSER_UNLIMITED_USE.getValue()) { // IceCream - Shears in dispenser can unlimited use config
+                 item.hurtAndBreak(1, serverLevel, null, item1 -> {});
+             }
+         }
