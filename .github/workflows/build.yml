@@ -32,7 +32,7 @@ jobs:
           git config --global user.email "no-reply@github.com"
           git config --global user.name "GitHub Actions"
           ./gradlew applyPatches --stacktrace
-      - name: Create Paperclip Jar
+      - name: Create Jar
         run: ./gradlew createPaperclipJar --stacktrace
       - name: Create Release
         continue-on-error: true
@@ -44,6 +44,3 @@ jobs:
           prerelease: false
           token: ${{ secrets.TOKEN }}
           makeLatest: true
-      - name: Publish to Repo
-        run: ./gradlew publish -PICECREAMUsername=${{ secrets.MAVEN_USER }} -PICECREAMPassword=${{ secrets.MAVEN_SECRET }}
-        continue-on-error: true
