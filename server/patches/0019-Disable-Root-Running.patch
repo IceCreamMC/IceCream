@@ -1,0 +1,30 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakseyt@gmail.com>
+Date: Wed, 4 Jun 2025 18:55:26 +0000
+Subject: [PATCH] Disable Root Running
+
+
+diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
+index 99178ac91db13b4a14189411c21f0385916fe481..3cdd7f032c72d85338c62a814fd854407deffaf8 100644
+--- a/net/minecraft/server/dedicated/DedicatedServer.java
++++ b/net/minecraft/server/dedicated/DedicatedServer.java
+@@ -132,6 +132,19 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface
+             LOGGER.warn("To start the server with more ram, launch it as \"java -Xmx1024M -Xms1024M -jar minecraft_server.jar\"");
+         }
+ 
++    // IceCream start - disable running as root
++    if (xyz.icecreammc.icecream.util.ServerEnvironment.userIsRootOrAdmin()) {
++        DedicatedServer.LOGGER.warn("****************************");
++        DedicatedServer.LOGGER.warn("YOU ARE RUNNING YOUR SERVER AS A ROOT/ADMIN USER!");
++        DedicatedServer.LOGGER.warn("THIS IS NOT ADVISED!");
++        DedicatedServer.LOGGER.warn("YOU ARE OPENING UP RISKS WHEN YOU DO THIS!");
++        DedicatedServer.LOGGER.warn("FOR MORE INFORMATION, SEE https://madelinemiller.dev/blog/root-minecraft-server/");
++        DedicatedServer.LOGGER.warn("YOUR SERVER WILL SHUTDOWN!");
++        DedicatedServer.LOGGER.warn("****************************");
++        return false;
++    }
++    // IceCream end - disable running as root
++
+         LOGGER.info("Loading properties");
+         DedicatedServerProperties properties = this.settings.getProperties();
+         if (this.isSingleplayer()) {
