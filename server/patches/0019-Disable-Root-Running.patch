@@ -5,7 +5,7 @@ Subject: [PATCH] Disable Root Running
 
 
 diff --git a/net/minecraft/server/dedicated/DedicatedServer.java b/net/minecraft/server/dedicated/DedicatedServer.java
-index 99178ac91db13b4a14189411c21f0385916fe481..3cdd7f032c72d85338c62a814fd854407deffaf8 100644
+index 99178ac91db13b4a14189411c21f0385916fe481..f68ddc71145aeba2342ea958cd057ad2ed92426c 100644
 --- a/net/minecraft/server/dedicated/DedicatedServer.java
 +++ b/net/minecraft/server/dedicated/DedicatedServer.java
 @@ -132,6 +132,19 @@ public class DedicatedServer extends MinecraftServer implements ServerInterface

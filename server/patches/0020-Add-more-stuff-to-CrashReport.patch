@@ -1,0 +1,84 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Pancakse <pancakseyt@gmail.com>
+Date: Mon, 9 Jun 2025 13:53:04 -0600
+Subject: [PATCH] Add more stuff to CrashReport
+
+
+diff --git a/net/minecraft/ReportType.java b/net/minecraft/ReportType.java
+index 93c6037a5a8dbfcf1ec3d4b133431810c5b42097..b36cf54329bd1b02245a2ac0e594039d9ae00770 100644
+--- a/net/minecraft/ReportType.java
++++ b/net/minecraft/ReportType.java
+@@ -3,8 +3,8 @@ package net.minecraft;
+ import java.util.List;
+ 
+ public record ReportType(String header, List<String> nuggets) {
+-    public static final ReportType CRASH = new ReportType(
+-        "Minecraft Crash Report",
++public static final ReportType CRASH = new ReportType(
++        "Minecraft Your Server Shitting Itself Report (Crash Report)",
+         List.of(
+             "Who set us up the TNT?",
+             "Everything's going to plan. No, really, that was supposed to happen.",
+@@ -39,7 +39,61 @@ public record ReportType(String header, List<String> nuggets) {
+             "You're mean.",
+             "This is a token for 1 free hug. Redeem at your nearest Mojangsta: [~~HUG~~]",
+             "There are four lights!",
+-            "But it works on my machine."
++            "But it works on my machine.",
++            "I don't know what I did, but I'm sure it was wrong.",
++            "Did you try turning it off and on again?",
++            ":(",
++            "Did you download ram?",
++            "Sorry bro, I melted your IceCream.",
++             "Were you being dumb? Why are you here?",
++            "How many plugins do you have!",
++            "Did you eat waffles?",
++            "You probably burned your pancakes. HOW DARE YOU!",
++            "Did you kill your own pet, maybe that's why your here.",
++            "Tacos are cool.",
++            "By seeing this message, you agree that tacos are tasty and the best food in the world.",
++            "Did you add patches from Yatopia or Mirai?",
++            "Did you not add thermal paste to your CPU?",
++            "Oops, did you forget to subscribe to pewdiepie? (6 years too late)",
++            "Are you using a potato server?",
++            "Ermm... it's actually called X and not Twitter!",
++            "Umm... was your server mining crypto?",
++            "Remember kids to never use cracked Minecaft.",
++            "Did you forget to update your server?",
++            "Did you forget to update your plugins?",
++            "(if the server is in offline mode) Did you forget to buy minecraft?",
++            "Did you pirate plugins, because you have no money?",
++            "Did you forget to pay your electric bill?",
++            "Remember to not unplug your server when it's running.",
++            "Did you forget to spot leaves today?",
++            "Did you spill water on your server and put it in rice?",
++            "Did you forget to feed your server computer chips today?",
++            "Did you forget to give your server a hug?",
++            "Did you try making a Aether portal?",
++            "Did you try to sleep in the nether?",
++            "Who let the ender dragon out again..",
++            "Did the Moon collide into your world again...",
++            "Did you forget to backup your world?",
++            "Is the sun becoming bigger?",
++            "Did you forget to feed your pet?",
++            "if offline mode: https://offlinemo.de/",
++            "Remember! It's always moral if it's adobe!",
++            "Remember kids, pirating is illigal!",
++            "We didn't start the fire. It was always burning, since the world's been turning...",
++            "Did you forget to update your Java version?",
++            "YOLO...",
++            "Did Aikar forget to eat his steak?",
++            "Every 60 seconds in Africa a minute passes.",
++            "Every 0.05 seconds a tick passes in Minecraft.",
++            "Doesn't have the same ring to it the original meme had.",
++            "At least it isn't Javascript.",
++            "Atleast I don't have Java 8.",
++            "Creeper? Aww, man",
++            "If pigs could fly...",
++            "Did you think a hog could fly?",
++            "You Needing Help: You: Help pls. Helper: No logs no help! You: NOOOOOO",
++            "What is love? Baby don't hurt me",
++            "This wouldn't happen if minecraft was written in rust..."
+         )
+     );
+     public static final ReportType PROFILE = new ReportType(
