@@ -30,6 +30,16 @@ public abstract class Value<C> {
 
     public abstract void setValue(String value);
 
+    public void setValue(Object value) {
+        if (value == null) {
+            setValue((String) null);
+        } else if (value instanceof String) {
+            setValue((String) value);
+        } else {
+            throw new IllegalArgumentException("Unsupported value type for config: " + value.getClass());
+        }
+    }
+
     public String getPath() {
         return path;
     }

@@ -38,5 +38,6 @@ public class IceCreamConfig extends AbstractConfig {
     // Config Values
     public final BooleanValue SHEAR_IN_DISPENSER_UNLIMITED_USE = new BooleanValue("misc.shear-in-dispenser-unlimited-use", false, "If true when a shear is in a dispenser it can be used forever.");
     public final StringValue SERVER_MOD_NAME = new StringValue("settings.server-mod-name", "IceCream", "Lets you change the server mod name.");
+    public final BooleanValue ISLAM_MODE = new BooleanValue("fun.islam-mode", false, "If true, eating pork or rotten flesh will instantly kill you."); // THIS IS FOR SATIRICAL REASONS. WE RESPECT ALL CULTURES :)
     // Config Values
 }

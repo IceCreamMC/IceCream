@@ -92,10 +92,10 @@ public abstract class AbstractConfig {
         // Populate values
         collectConfigValues().forEach(v -> {
             Object value = configData.get(v.getPath());
-            if (value instanceof String || value == null) {
-                v.setValue((String) value);
-            } else {
-                LOGGER.warn("Expected String for path '{}', but found: {}", v.getPath(), value.getClass().getSimpleName());
+            try {
+                v.setValue(value);
+            } catch (Exception e) {
+                LOGGER.warn("Could not set config value for '{}': {}", v.getPath(), e.getMessage());
             }
         });
 

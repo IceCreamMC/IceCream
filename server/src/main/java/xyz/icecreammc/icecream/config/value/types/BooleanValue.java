@@ -13,7 +13,21 @@ public class BooleanValue extends Value<Boolean> {
         super(path, defaultValue);
     }
 
+    @Override
+    public void setValue(Object value) {
+        if (value instanceof Boolean) {
+            type = (Boolean) value;
+        } else if (value instanceof String) {
+            type = Boolean.parseBoolean((String) value);
+        } else if (value == null) {
+            type = false;
+        } else {
+            throw new IllegalArgumentException("Unsupported value type for BooleanValue: " + value.getClass());
+        }
+    }
+
+    @Override
     public void setValue(String value) {
-        type = Boolean.parseBoolean(value);
+        type = value != null && Boolean.parseBoolean(value);
     }
 }
